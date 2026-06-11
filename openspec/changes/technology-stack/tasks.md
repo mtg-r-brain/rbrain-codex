@@ -3,9 +3,9 @@
 - [x] 1.1 Create `openspec/specs/language-runtimes/runtime-allocation.yaml` mirroring the table from the spec: a flat mapping from context name to runtime (`rust`, `python`, `typescript`, `none`).
 - [x] 1.2 Create `openspec/specs/language-runtimes/version-floors.yaml` listing every component with its `>=` floor (Rust, Python, Node.js, Next.js, Axum, Tokio, SQLx, FastAPI, LangGraph).
 - [x] 1.3 Create `openspec/specs/language-runtimes/memory-budgets.yaml` listing per-context `max_rss_mb`, plus the external dependency budgets (postgres: 256, redis: 50, nats: 40) and the platform ceiling (1024).
-- [ ] 1.4 Write `scripts/validate-runtimes.sh` that asserts: (a) every context in `bounded-contexts/catalog.yaml` is present in `runtime-allocation.yaml`, (b) every runtime in the allocation is one of the four allowed values, (c) the sum of `max_rss_mb` plus external budgets does not exceed the ceiling.
-- [ ] 1.5 Extend `scripts/validate-repo.sh` (from `platform-architecture` tasks) to additionally assert `OWNERSHIP.runtime` matches `runtime-allocation.yaml` and `OWNERSHIP.max_rss_mb` matches `memory-budgets.yaml`.
-- [ ] 1.6 Wire all new validators into `rbrain-codex` CI.
+- [x] 1.4 Write `scripts/validate-runtimes.sh` that asserts: (a) every context in `bounded-contexts/catalog.yaml` is present in `runtime-allocation.yaml`, (b) every runtime in the allocation is one of the four allowed values, (c) the sum of `max_rss_mb` plus external budgets does not exceed the ceiling.
+- [x] 1.5 Extend `scripts/validate-repo.sh` (from `platform-architecture` tasks) to additionally assert `OWNERSHIP.runtime` matches `runtime-allocation.yaml` and `OWNERSHIP.max_rss_mb` matches `memory-budgets.yaml`.
+- [x] 1.6 Wire all new validators into `rbrain-codex` CI.
 
 ## 2. data-stores capability
 
