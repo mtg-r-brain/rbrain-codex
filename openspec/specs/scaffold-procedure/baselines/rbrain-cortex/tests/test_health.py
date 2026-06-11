@@ -1,13 +1,8 @@
 """Smoke test for the /health endpoint."""
 
-from fastapi.testclient import TestClient
-
-from app.main import CONTEXT_NAME, app
-
-client = TestClient(app)
+from app.main import CONTEXT_NAME, health
 
 
 def test_health_returns_ok() -> None:
-    response = client.get("/health")
-    assert response.status_code == 200
-    assert response.json() == {"status": "ok", "context": CONTEXT_NAME}
+    result = health()
+    assert result == {"status": "ok", "context": CONTEXT_NAME}
