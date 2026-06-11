@@ -36,5 +36,8 @@ jobs:
       - name: Validate subjects
         run: bash scripts/validate-subjects.sh
 
+      - name: Validate LLM config
+        run: bash scripts/validate-llm-config.sh
+
       - name: Self-validate codex repo
         run: bash scripts/validate-repo.sh .

@@ -22,10 +22,10 @@
 
 ## 4. llm-abstraction capability
 
-- [ ] 4.1 Document the `LlmPort` capability contract in `openspec/specs/llm-abstraction/llm-port.md` (the three required capabilities — generation, tool-calling, embeddings — as prose, without method signatures).
-- [ ] 4.2 List the three reference providers and their accepted env var sets in `openspec/specs/llm-abstraction/providers.yaml` (`claude`: `ANTHROPIC_API_KEY`, optional `ANTHROPIC_BASE_URL`, `ANTHROPIC_MODEL`; `ollama`: `OLLAMA_BASE_URL`, `OLLAMA_MODEL`; `openai`: `OPENAI_API_KEY`, optional `OPENAI_BASE_URL`, `OPENAI_MODEL`).
-- [ ] 4.3 Document the no-default-provider rule and the boot-time failure expectation in `openspec/specs/llm-abstraction/boot-validation.md`.
-- [ ] 4.4 Write `scripts/validate-llm-config.sh` that asserts `providers.yaml` lists exactly three providers and that each lists at least one required env var.
+- [x] 4.1 Document the `LlmPort` capability contract in `openspec/specs/llm-abstraction/llm-port.md` (the three required capabilities — generation, tool-calling, embeddings — as prose, without method signatures).
+- [x] 4.2 List the three reference providers and their accepted env var sets in `openspec/specs/llm-abstraction/providers.yaml` (`claude`: `ANTHROPIC_API_KEY`, optional `ANTHROPIC_BASE_URL`, `ANTHROPIC_MODEL`; `ollama`: `OLLAMA_BASE_URL`, `OLLAMA_MODEL`; `openai`: `OPENAI_API_KEY`, optional `OPENAI_BASE_URL`, `OPENAI_MODEL`).
+- [x] 4.3 Document the no-default-provider rule and the boot-time failure expectation in `openspec/specs/llm-abstraction/boot-validation.md`.
+- [x] 4.4 Write `scripts/validate-llm-config.sh` that asserts `providers.yaml` lists exactly three providers and that each lists at least one required env var.
 
 ## 5. Cross-capability follow-up
 

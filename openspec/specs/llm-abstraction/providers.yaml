@@ -1,0 +1,38 @@
+# Authoritative catalogue of the three reference LLM providers shipped by
+# rbrain-cortex v1.
+# Source of truth for: the set of accepted LLM_PROVIDER values and, per
+# provider, the environment variables the provider implementation reads.
+# Spec: openspec/specs/llm-abstraction/spec.md ("Three reference providers
+# ship in v1", "Provider configuration is declared, not implicit").
+# Adding or removing a provider, or adding/removing an env var, requires an
+# OpenSpec change.
+
+# Selector env var: LLM_PROVIDER (no default; rbrain-cortex fails at boot if
+# unset or set to a value outside this map). See boot-validation.md.
+
+providers:
+  claude:
+    sdk: anthropic
+    env:
+      required:
+        - ANTHROPIC_API_KEY
+      optional:
+        - ANTHROPIC_BASE_URL
+        - ANTHROPIC_MODEL
+
+  ollama:
+    sdk: ollama-http
+    env:
+      required:
+        - OLLAMA_BASE_URL
+        - OLLAMA_MODEL
+      optional: []
+
+  openai:
+    sdk: openai
+    env:
+      required:
+        - OPENAI_API_KEY
+      optional:
+        - OPENAI_BASE_URL
+        - OPENAI_MODEL
