@@ -26,13 +26,13 @@
 
 ## 4. scaffold-procedure capability — script
 
-- [ ] 4.1 Create `scripts/scaffold-repo.sh` parsing the positional `<context-name>` and optional `<target-dir>` and `--force` flag; reject any other argument.
-- [ ] 4.2 Implement YAML loading: for the given context, fetch `runtime`, `max_rss_mb`, `responsibility`, `non_responsibilities`, `owned_terms`, `callers`, `callees`, `publishes` from the four authoritative files via `yq -r`; fail with a precise error on any missing field.
-- [ ] 4.3 Implement list pre-expansion: for each list-typed value, produce a newline-delimited bullet string (`- item`); export every variable for `envsubst`.
-- [ ] 4.4 Select the template directory based on `${RUNTIME}` (fail explicitly for `runtime: none`).
-- [ ] 4.5 Refuse non-empty target unless `--force` is passed; on `--force`, overwrite template-managed files only.
-- [ ] 4.6 Walk the selected template, piping each file through `envsubst '$CONTEXT_NAME $RUNTIME $MAX_RSS_MB $RESPONSIBILITY $NON_RESPONSIBILITIES $OWNED_TERMS $CALLERS $CALLEES $PUBLISHES'` and writing to the corresponding path under `<target-dir>`.
-- [ ] 4.7 After writing, invoke `scripts/validate-repo.sh <target-dir>` and propagate its exit code; on success, print a one-line pointer to `openspec/specs/scaffold-procedure/checklist.md`.
+- [x] 4.1 Create `scripts/scaffold-repo.sh` parsing the positional `<context-name>` and optional `<target-dir>` and `--force` flag; reject any other argument.
+- [x] 4.2 Implement YAML loading: for the given context, fetch `runtime`, `max_rss_mb`, `responsibility`, `non_responsibilities`, `owned_terms`, `callers`, `callees`, `publishes` from the four authoritative files via `yq -r`; fail with a precise error on any missing field.
+- [x] 4.3 Implement list pre-expansion: for each list-typed value, produce a newline-delimited bullet string (`- item`); export every variable for `envsubst`.
+- [x] 4.4 Select the template directory based on `${RUNTIME}` (fail explicitly for `runtime: none`).
+- [x] 4.5 Refuse non-empty target unless `--force` is passed; on `--force`, overwrite template-managed files only.
+- [x] 4.6 Walk the selected template, piping each file through `envsubst '$CONTEXT_NAME $RUNTIME $MAX_RSS_MB $RESPONSIBILITY $NON_RESPONSIBILITIES $OWNED_TERMS $CALLERS $CALLEES $PUBLISHES'` and writing to the corresponding path under `<target-dir>`.
+- [x] 4.7 After writing, invoke `scripts/validate-repo.sh <target-dir>` and propagate its exit code; on success, print a one-line pointer to `openspec/specs/scaffold-procedure/checklist.md`.
 - [ ] 4.8 Add unit tests for the script under `scripts/tests/scaffold-repo/` covering: happy path for each runtime, unknown context, missing YAML field, runtime=none rejection, non-empty target without --force, --force preserves unrelated files.
 
 ## 5. scaffold-procedure capability — checklist & drift CI
