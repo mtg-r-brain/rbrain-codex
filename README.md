@@ -51,6 +51,24 @@ bash scripts/validate-llm-config.sh     # 3 LLM providers, env var coverage
 bash scripts/validate-repo.sh .         # this repo's own OWNERSHIP.yaml + mandatory files
 ```
 
+## Scaffolding sibling repositories
+
+`scripts/scaffold-repo.sh` materializes a new `rbrain-*` sibling from a runtime-scoped template. Every value is resolved from the YAML sources above — no flags carry business data:
+
+```sh
+bash scripts/scaffold-repo.sh <context-name> [<target-dir>] [--force]
+```
+
+By default the output lands at `../rbrain-<context-name>/`. The script runs `validate-repo.sh` against its output and points at [`openspec/specs/scaffold-procedure/checklist.md`](openspec/specs/scaffold-procedure/checklist.md) for the post-scaffold steps (create the GitHub repo, push, enable CI, etc.).
+
+Three templates live under [`openspec/specs/scaffold-templates/templates/`](openspec/specs/scaffold-templates/templates/), indexed by runtime: `rust-service/`, `python-service/`, `typescript-app/`. Contexts whose runtime is `none` (`codex`, `deploy`) are bespoke and not served by the scaffolder.
+
+A CI job (`scaffold-drift`) compares the dry-run output against [checked-in baselines](openspec/specs/scaffold-procedure/baselines/) for the eight scaffoldable contexts. When you edit a template or a YAML source, refresh the baselines in the same commit:
+
+```sh
+bash scripts/refresh-baselines.sh
+```
+
 The validators require [`yq`](https://github.com/mikefarah/yq) (Go-based, v4+). Install via `brew install yq` on macOS.
 
 `validate-repo.sh` is fetched by every sibling `rbrain-*` repo's CI from this repo's `main` branch — see `openspec/specs/scaffold-templates/spec.md` (under change `scaffold-sibling-repos`) for the exact mechanism.

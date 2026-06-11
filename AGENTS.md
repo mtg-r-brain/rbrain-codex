@@ -61,6 +61,18 @@ bash scripts/validate-repo.sh .         # this repo's mandatory files + OWNERSHI
 
 CI runs all seven on every push to `main` and every pull request — workflow at `.github/workflows/ci.yml`.
 
+### Scaffold tooling
+
+`scripts/scaffold-repo.sh <context>` materializes a sibling `rbrain-*` repository from one of the three runtime templates under `openspec/specs/scaffold-templates/templates/`. After editing any template or any YAML source, refresh the checked-in baselines:
+
+```sh
+bash scripts/refresh-baselines.sh        # regenerates the eight rbrain-<ctx> baselines
+```
+
+A separate CI job (`scaffold-drift`) dry-runs the scaffolder and diffs against the baselines on every push. A drift means either a template edit needs a baseline refresh, or a YAML source change has knock-on effects on the scaffolded output — both are caught at PR time.
+
+Smoke tests for the scaffolder live at `scripts/tests/scaffold-repo/run.sh`.
+
 If a change modifies `catalog.yaml`, `sync-graph.yaml`, `runtime-allocation.yaml`, or `memory-budgets.yaml`, expect downstream changes to sibling repos' `OWNERSHIP.yaml` files. Drift is caught by `validate-repo.sh` running in each sibling's CI (it fetches the latest validator + sources from this repo's `main`).
 
 ### Conventions

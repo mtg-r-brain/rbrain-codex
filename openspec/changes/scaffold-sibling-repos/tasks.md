@@ -44,7 +44,7 @@
 
 ## 6. Hand-off
 
-- [ ] 6.1 Update `rbrain-codex/README.md` to document the scaffold workflow (one paragraph + `scaffold-repo.sh` usage + checklist pointer).
-- [ ] 6.2 Update `rbrain-codex/AGENTS.md` to mention the scaffold script, the drift job, and the refresh helper.
+- [x] 6.1 Update `rbrain-codex/README.md` to document the scaffold workflow (one paragraph + `scaffold-repo.sh` usage + checklist pointer).
+- [x] 6.2 Update `rbrain-codex/AGENTS.md` to mention the scaffold script, the drift job, and the refresh helper.
 - [ ] 6.3 Once tasks 1.x–5.x land and the drift job is green for all eight contexts, the maintainer (out of OpenSpec) runs `scripts/scaffold-repo.sh` for each of the eight contexts, follows the checklist, and creates the eight sibling repos.
 - [ ] 6.4 Archive this change via `openspec archive scaffold-sibling-repos` once tasks 1.x–5.x are complete and CI is green. (Task 6.3 is outside the spec's scope but tracked for visibility.)
