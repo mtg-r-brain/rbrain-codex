@@ -1,0 +1,38 @@
+# Reference template for the OWNERSHIP.yaml file every rbrain-* repo MUST ship.
+# Spec: openspec/specs/repository-conventions/spec.md ("OWNERSHIP.yaml schema").
+# Placeholders use POSIX shell syntax ${VAR} so the scaffold-sibling-repos
+# tool can substitute them via envsubst.
+
+# The bounded context name in lowercase kebab-case.
+# MUST match the repo name (rbrain-<context>) and an entry in
+# openspec/specs/bounded-contexts/catalog.yaml.
+context: ${CONTEXT_NAME}
+
+# The human or team primarily responsible for this repository.
+# Free-form string. Email recommended.
+owner: hoani.cross@gmail.com
+
+# The primary runtime used by this repo. One of: rust | python | typescript | none.
+# MUST match the value declared for this context in
+# openspec/specs/language-runtimes/runtime-allocation.yaml.
+runtime: ${RUNTIME}
+
+# Memory budget for this repo's primary process, in megabytes (integer).
+# MUST match the value declared for this context in
+# openspec/specs/language-runtimes/memory-budgets.yaml.
+# SHALL be 0 for contexts whose runtime is "none" (deploy, codex).
+max_rss_mb: ${MAX_RSS_MB}
+
+# List of bounded context names this repo calls synchronously over HTTP.
+# MUST be a subset of the callees declared for this context in
+# openspec/specs/service-topology/sync-graph.yaml.
+# Empty list is valid (this repo calls no other context synchronously).
+depends_on:
+${CALLEES}
+
+# List of NATS subject patterns this repo publishes events on.
+# Each pattern MUST match the regex ^rbrain\.<this-context>\.[a-z][a-z0-9-]*$
+# (or ^rbrain\.system\.[a-z][a-z0-9-]*$ for deploy only).
+# Empty list is valid (this repo publishes no events).
+publishes:
+${PUBLISHES}

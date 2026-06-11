@@ -14,8 +14,8 @@
 
 ## 3. repository-conventions capability
 
-- [ ] 3.1 Create `openspec/specs/repository-conventions/templates/OWNERSHIP.yaml` as the reference template, with inline comments documenting each of the five fields (`context`, `owner`, `runtime`, `depends_on`, `publishes`).
-- [ ] 3.2 Create `openspec/specs/repository-conventions/templates/AGENTS.md` as the baseline content template (placeholders for context name, responsibility, non-responsibilities, callers/callees, published subjects).
+- [x] 3.1 Create `openspec/specs/repository-conventions/templates/OWNERSHIP.yaml` as the reference template, with inline comments documenting each of the five fields (`context`, `owner`, `runtime`, `depends_on`, `publishes`).
+- [x] 3.2 Create `openspec/specs/repository-conventions/templates/AGENTS.md` as the baseline content template (placeholders for context name, responsibility, non-responsibilities, callers/callees, published subjects).
 - [ ] 3.3 Write `scripts/validate-repo.sh` that, given a path to an `rbrain-*` repo, asserts presence of the four mandatory files and validates `OWNERSHIP.yaml` against the schema (5 required fields, allowed runtimes, depends_on subset of `sync-graph.yaml` edges originating from this context, publishes patterns match `rbrain.<ctx>.<event>`).
 - [ ] 3.4 Document in `rbrain-codex`'s own `AGENTS.md` how to invoke the validators locally and in CI, so contributors discover them without reading every spec.
 
