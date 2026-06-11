@@ -1,0 +1,6 @@
+context: cortex
+owner: hoani.cross@gmail.com
+runtime: python
+max_rss_mb: 200
+depends_on: [lexicon, oracle, forge]
+publishes: []

@@ -1,0 +1,6 @@
+context: forge
+owner: hoani.cross@gmail.com
+runtime: rust
+max_rss_mb: 30
+depends_on: []
+publishes: []

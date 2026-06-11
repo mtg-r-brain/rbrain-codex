@@ -1,0 +1,6 @@
+context: oracle
+owner: hoani.cross@gmail.com
+runtime: rust
+max_rss_mb: 40
+depends_on: []
+publishes: []

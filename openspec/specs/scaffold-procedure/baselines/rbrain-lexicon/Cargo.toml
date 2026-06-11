@@ -1,0 +1,23 @@
+[package]
+name = "rbrain-lexicon"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.83"
+license = "AGPL-3.0-only"
+description = "Maintains the authoritative card catalogue synced from Scryfall and serves full-text card search."
+
+[dependencies]
+axum = "0.7"
+tokio = { version = "1.40", features = ["rt-multi-thread", "macros", "signal"] }
+tower = "0.5"
+tower-http = { version = "0.6", features = ["trace"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
+
+[profile.release]
+opt-level = "z"
+lto = true
+strip = true
+codegen-units = 1

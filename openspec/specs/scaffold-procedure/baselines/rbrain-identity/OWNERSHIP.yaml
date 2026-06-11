@@ -1,0 +1,6 @@
+context: identity
+owner: hoani.cross@gmail.com
+runtime: rust
+max_rss_mb: 25
+depends_on: []
+publishes: []

@@ -1,0 +1,7 @@
+/target
+**/*.rs.bk
+Cargo.lock.bak
+.envrc.local
+.env
+.env.local
+.DS_Store

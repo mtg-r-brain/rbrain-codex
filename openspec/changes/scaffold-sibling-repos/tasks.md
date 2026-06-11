@@ -37,10 +37,10 @@
 
 ## 5. scaffold-procedure capability — checklist & drift CI
 
-- [ ] 5.1 Create `openspec/specs/scaffold-procedure/checklist.md` documenting the post-scaffold steps (create GH repo named `rbrain-<context>`, push initial commit, enable Actions, branch protection on `main`, required CI checks, add to `rbrain-deploy` discovery, optional Discord announcement).
-- [ ] 5.2 For each runtime!=none context (`gateway`, `identity`, `lexicon`, `oracle`, `forge`, `chronicle`, `cortex`, `app`), generate a baseline scaffold at `openspec/specs/scaffold-procedure/baselines/rbrain-<context>/` by running the scaffold script against a temporary dir and copying the result. Commit these eight baseline trees.
-- [ ] 5.3 Add a CI job `scaffold-drift` to `rbrain-codex`'s workflow that, for each of the eight contexts, dry-runs `scripts/scaffold-repo.sh <context> /tmp/scaffold-<context>` and runs `diff -r /tmp/scaffold-<context> openspec/specs/scaffold-procedure/baselines/rbrain-<context>`; fail the job on any diff.
-- [ ] 5.4 Add a developer-facing helper `scripts/refresh-baselines.sh` that regenerates every baseline in-place (used to update baselines after a legitimate template change in the same commit).
+- [x] 5.1 Create `openspec/specs/scaffold-procedure/checklist.md` documenting the post-scaffold steps (create GH repo named `rbrain-<context>`, push initial commit, enable Actions, branch protection on `main`, required CI checks, add to `rbrain-deploy` discovery, optional Discord announcement).
+- [x] 5.2 For each runtime!=none context (`gateway`, `identity`, `lexicon`, `oracle`, `forge`, `chronicle`, `cortex`, `app`), generate a baseline scaffold at `openspec/specs/scaffold-procedure/baselines/rbrain-<context>/` by running the scaffold script against a temporary dir and copying the result. Commit these eight baseline trees.
+- [x] 5.3 Add a CI job `scaffold-drift` to `rbrain-codex`'s workflow that, for each of the eight contexts, dry-runs `scripts/scaffold-repo.sh <context> /tmp/scaffold-<context>` and runs `diff -r /tmp/scaffold-<context> openspec/specs/scaffold-procedure/baselines/rbrain-<context>`; fail the job on any diff.
+- [x] 5.4 Add a developer-facing helper `scripts/refresh-baselines.sh` that regenerates every baseline in-place (used to update baselines after a legitimate template change in the same commit).
 
 ## 6. Hand-off
 

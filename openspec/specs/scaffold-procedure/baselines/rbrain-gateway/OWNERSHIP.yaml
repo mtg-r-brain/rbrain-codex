@@ -1,0 +1,6 @@
+context: gateway
+owner: hoani.cross@gmail.com
+runtime: rust
+max_rss_mb: 35
+depends_on: [identity, cortex, chronicle]
+publishes: []

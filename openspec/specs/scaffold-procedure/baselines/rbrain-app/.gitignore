@@ -1,0 +1,20 @@
+node_modules/
+.pnpm-store/
+.next/
+.next-env.d.ts
+out/
+build/
+dist/
+
+# Local env
+.env
+.env.local
+.envrc.local
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# OS
+.DS_Store

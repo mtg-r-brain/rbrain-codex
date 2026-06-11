@@ -1,0 +1,6 @@
+context: app
+owner: hoani.cross@gmail.com
+runtime: typescript
+max_rss_mb: 100
+depends_on: [gateway]
+publishes: []

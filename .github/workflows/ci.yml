@@ -41,3 +41,45 @@ jobs:
 
       - name: Self-validate codex repo
         run: bash scripts/validate-repo.sh .
+
+  scaffold-drift:
+    name: Scaffold drift
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Install yq
+        run: |
+          sudo wget -qO /usr/local/bin/yq \
+            https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+          sudo chmod +x /usr/local/bin/yq
+
+      - name: Install envsubst
+        run: sudo apt-get update && sudo apt-get install -y gettext-base
+
+      - name: Dry-run scaffold for every runtime!=none context and diff against baseline
+        run: |
+          set -euo pipefail
+          contexts=$(yq -r '.allocation | to_entries | .[] | select(.value != "none") | .key' \
+            openspec/specs/language-runtimes/runtime-allocation.yaml)
+          failed=0
+          for ctx in $contexts; do
+            tmp=$(mktemp -d)
+            baseline="openspec/specs/scaffold-procedure/baselines/rbrain-${ctx}"
+            echo "::group::scaffold drift for rbrain-${ctx}"
+            bash scripts/scaffold-repo.sh "$ctx" "$tmp/rbrain-${ctx}" >/dev/null
+            if ! diff -r --brief "$tmp/rbrain-${ctx}" "$baseline" >/tmp/diff-${ctx}.log 2>&1; then
+              echo "::error::baseline drift detected for rbrain-${ctx}"
+              cat /tmp/diff-${ctx}.log
+              failed=1
+            else
+              echo "no drift for rbrain-${ctx}"
+            fi
+            rm -rf "$tmp"
+            echo "::endgroup::"
+          done
+          if [ "$failed" -ne 0 ]; then
+            echo "::error::scaffold-drift failed; refresh baselines via bash scripts/refresh-baselines.sh and recommit"
+            exit 1
+          fi
