@@ -1,0 +1,8 @@
+context: ${CONTEXT_NAME}
+owner: hoani.cross@gmail.com
+runtime: ${RUNTIME}
+max_rss_mb: ${MAX_RSS_MB}
+depends_on:
+${DEPENDS_ON}
+publishes:
+${PUBLISHES_LIST}

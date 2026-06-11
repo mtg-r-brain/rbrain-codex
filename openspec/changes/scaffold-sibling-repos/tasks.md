@@ -8,12 +8,12 @@
 
 ## 2. scaffold-templates capability — python-service
 
-- [ ] 2.1 Create `openspec/specs/scaffold-templates/templates/python-service/pyproject.toml` declaring `python = ">=3.12"`, `fastapi >= 0.115`, `uvicorn[standard]`, and the dev tools (`ruff`, `mypy`).
-- [ ] 2.2 Create `openspec/specs/scaffold-templates/templates/python-service/app/main.py` with a FastAPI app exposing `GET /health` returning `{"status":"ok","context":"${CONTEXT_NAME}"}`.
-- [ ] 2.3 Create the template's `README.md`, `AGENTS.md`, `OWNERSHIP.yaml` (same placeholder set as rust-service), `.gitignore` (Python standard + `.venv/`, `uv.lock` kept).
-- [ ] 2.4 Create `.github/workflows/ci.yml` running `uv sync`, `uv run ruff check .`, `uv run ruff format --check .`, `uv run mypy app`, `uv run pytest --collect-only`, then fetching and running `validate-repo.sh`.
-- [ ] 2.5 Create a multi-stage `Dockerfile` (builder installing dependencies via `uv`, runtime on `python:3.12-slim`) producing an image that serves `/health` via `uvicorn`.
-- [ ] 2.6 Generate the initial `uv.lock` against the dependency set and commit it alongside `pyproject.toml`.
+- [x] 2.1 Create `openspec/specs/scaffold-templates/templates/python-service/pyproject.toml` declaring `python = ">=3.12"`, `fastapi >= 0.115`, `uvicorn[standard]`, and the dev tools (`ruff`, `mypy`).
+- [x] 2.2 Create `openspec/specs/scaffold-templates/templates/python-service/app/main.py` with a FastAPI app exposing `GET /health` returning `{"status":"ok","context":"${CONTEXT_NAME}"}`.
+- [x] 2.3 Create the template's `README.md`, `AGENTS.md`, `OWNERSHIP.yaml` (same placeholder set as rust-service), `.gitignore` (Python standard + `.venv/`, `uv.lock` kept).
+- [x] 2.4 Create `.github/workflows/ci.yml` running `uv sync`, `uv run ruff check .`, `uv run ruff format --check .`, `uv run mypy app`, `uv run pytest --collect-only`, then fetching and running `validate-repo.sh`.
+- [x] 2.5 Create a multi-stage `Dockerfile` (builder installing dependencies via `uv`, runtime on `python:3.12-slim`) producing an image that serves `/health` via `uvicorn`.
+- [x] 2.6 Generate the initial `uv.lock` against the dependency set and commit it alongside `pyproject.toml`.
 
 ## 3. scaffold-templates capability — typescript-app
 
