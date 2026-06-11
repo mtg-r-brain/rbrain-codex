@@ -6,9 +6,6 @@ on:
   pull_request:
     branches: [main]
 
-env:
-  CODEX_RAW_BASE: https://raw.githubusercontent.com/mtg-r-brain/rbrain-codex/main
-
 jobs:
   build:
     name: Build & validate
@@ -34,7 +31,14 @@ jobs:
             https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
           sudo chmod +x /usr/local/bin/yq
 
-      - name: Fetch and run validate-repo
-        run: |
-          curl -fsSL "$CODEX_RAW_BASE/scripts/validate-repo.sh" -o /tmp/validate-repo.sh
-          bash /tmp/validate-repo.sh .
+      - name: Check out rbrain-codex
+        uses: actions/checkout@v4
+        with:
+          repository: mtg-r-brain/rbrain-codex
+          path: .codex
+          token: ${{ secrets.CODEX_READ_TOKEN || github.token }}
+
+      - name: Run validate-repo against this repo
+        env:
+          CODEX_LOCAL_ROOT: ${{ github.workspace }}/.codex
+        run: bash .codex/scripts/validate-repo.sh .
