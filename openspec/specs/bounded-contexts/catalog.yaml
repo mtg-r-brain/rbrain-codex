@@ -1,0 +1,157 @@
+# Authoritative catalog of MTG R.brain bounded contexts.
+# Source of truth for: which contexts exist, what each owns, what each
+# explicitly does NOT own, and which domain terms each defines.
+# Spec: openspec/specs/bounded-contexts/spec.md
+# Modifying this file requires an OpenSpec change that updates the spec.
+
+contexts:
+  gateway:
+    responsibility: >-
+      Routes external HTTP traffic to backend contexts, enforces
+      authentication, and applies rate limiting.
+    non_responsibilities:
+      - LLM orchestration
+      - business logic of any backend context
+      - card catalogue queries (delegated to cortex which calls lexicon)
+    owned_terms:
+      - ingress
+      - http-route
+      - rate-limit
+      - middleware
+
+  identity:
+    responsibility: >-
+      Manages user accounts, sessions, and identity tokens; integrates
+      OAuth2 providers (Google, Discord).
+    non_responsibilities:
+      - authorization beyond authentication
+      - role-based access control for application features
+    owned_terms:
+      - account
+      - user
+      - session
+      - jwt
+      - oauth-provider
+
+  lexicon:
+    responsibility: >-
+      Maintains the authoritative card catalogue synced from Scryfall and
+      serves full-text card search.
+    non_responsibilities:
+      - rules text interpretation
+      - deck legality enforcement
+      - card pricing or market data
+    owned_terms:
+      - card
+      - set
+      - printing
+      - scryfall-id
+      - oracle-id
+      - mana-cost
+      - color-identity
+
+  oracle:
+    responsibility: >-
+      Answers Magic: The Gathering rules questions by retrieving and
+      reasoning over the comprehensive rules and community sources.
+    non_responsibilities:
+      - card catalogue maintenance
+      - deck analysis
+      - tournament policy questions
+    owned_terms:
+      - rule
+      - ruling
+      - comprehensive-rules
+      - glossary-entry
+      - game-layer
+
+  forge:
+    responsibility: >-
+      Parses, stores, and analyzes Magic decks across all supported formats.
+    non_responsibilities:
+      - card catalogue maintenance
+      - rules text retrieval
+      - matchup or metagame analytics (v1)
+    owned_terms:
+      - deck
+      - deck-list
+      - format-legality
+      - sideboard
+      - maybeboard
+      - mainboard
+
+  cortex:
+    responsibility: >-
+      Orchestrates LLM agents, conversations, and tool invocations across
+      lexicon, oracle, and forge.
+    non_responsibilities:
+      - card catalogue (delegated to lexicon)
+      - rules text (delegated to oracle)
+      - deck storage (delegated to forge)
+      - user authentication (delegated to gateway)
+    owned_terms:
+      - conversation
+      - agent
+      - tool-call
+      - prompt
+      - completion
+      - embedding
+
+  chronicle:
+    responsibility: >-
+      Manages editorial blog content (articles, drafts, publications).
+    non_responsibilities:
+      - user account management
+      - comment moderation (v1)
+      - paywall or subscription logic
+    owned_terms:
+      - article
+      - post
+      - draft
+      - publication
+      - category
+
+  app:
+    responsibility: >-
+      Renders the user-facing Next.js application — chat UI, deck builder,
+      blog reader.
+    non_responsibilities:
+      - backend business logic
+      - direct database access
+      - LLM provider calls
+    owned_terms:
+      - page
+      - viewport
+      - session-cookie
+      - ui-state
+
+  deploy:
+    responsibility: >-
+      Builds and operates the platform's local and production deployment
+      artifacts (docker-compose, Helm chart).
+    non_responsibilities:
+      - application business logic
+      - schema migrations of individual contexts
+      - secret values (only secret references)
+    owned_terms:
+      - service
+      - deployment
+      - environment
+      - deployment-stack
+
+  codex:
+    responsibility: >-
+      Holds the OpenSpec proposals, specs, and ADRs that govern the
+      platform.
+    non_responsibilities:
+      - runtime configuration
+      - secret storage
+      - business logic of any context
+    owned_terms:
+      - spec
+      - capability
+      - change
+      - adr
+      - proposal
+      - requirement
+      - scenario

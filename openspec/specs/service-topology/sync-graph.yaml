@@ -1,0 +1,34 @@
+# Authoritative synchronous call graph between bounded contexts.
+# Source of truth for: who may call whom over HTTP, and why.
+# Spec: openspec/specs/service-topology/spec.md
+# Invariant: this graph SHALL remain a DAG. Adding a cycle requires
+# an OpenSpec change amending both this file and the spec.
+
+edges:
+  - caller: app
+    callee: gateway
+    purpose: All frontend backend traffic; the gateway is the sole public ingress.
+
+  - caller: gateway
+    callee: identity
+    purpose: Authentication and account operations (login, signup, token verification).
+
+  - caller: gateway
+    callee: cortex
+    purpose: Chat and agent invocations from the user-facing app.
+
+  - caller: gateway
+    callee: chronicle
+    purpose: Blog content reads (public) and edits (authenticated).
+
+  - caller: cortex
+    callee: lexicon
+    purpose: Card lookups used as agent tools (oracle text retrieval, search).
+
+  - caller: cortex
+    callee: oracle
+    purpose: Rules queries used as agent tools (rule lookup, ruling explanation).
+
+  - caller: cortex
+    callee: forge
+    purpose: Deck operations used as agent tools (parse, analyze, validate).
