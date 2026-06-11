@@ -22,5 +22,5 @@
 ## 4. Hand-off
 
 - [x] 4.1 Update `rbrain-codex/README.md` to point newcomers at `openspec/specs/bounded-contexts/catalog.yaml` as the entry point to the platform.
-- [ ] 4.2 Open a follow-up OpenSpec change `scaffold-sibling-repos` whose scope is the creation of the nine sibling repositories against these conventions; this change does not perform that scaffolding itself.
+- [x] 4.2 Open a follow-up OpenSpec change `scaffold-sibling-repos` whose scope is the creation of the nine sibling repositories against these conventions; this change does not perform that scaffolding itself.
 - [ ] 4.3 Archive this change via `openspec archive platform-architecture` once tasks 1.x–3.x are complete and CI is green.
