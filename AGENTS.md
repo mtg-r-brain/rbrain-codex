@@ -1,0 +1,70 @@
+# codex — Agent Bootstrap
+
+Conformant to the AGENTS.md baseline defined in `openspec/specs/repository-conventions/spec.md`.
+
+## Responsibility
+
+Holds the OpenSpec proposals, specs, and ADRs that govern the platform.
+
+## Non-responsibilities
+
+The following concerns are explicitly NOT owned by `codex`. Route them elsewhere:
+
+- runtime configuration → `rbrain-deploy`
+- secret storage → out-of-band (vault, environment, never committed)
+- business logic of any context → the context's own repo
+
+## Owned vocabulary
+
+- `spec`, `capability`, `change`, `adr`, `proposal`, `requirement`, `scenario`
+
+## Synchronous callers / callees
+
+None. `codex` is a documentation repo; it has no runtime and does not appear in `openspec/specs/service-topology/sync-graph.yaml`.
+
+## Published events
+
+None. `codex` has no runtime.
+
+## Runtime
+
+This repo's primary runtime is `none` with `max_rss_mb: 0` (declared in `OWNERSHIP.yaml`).
+
+## Working in this repo
+
+### OpenSpec workflow
+
+Every platform-level change goes through a four-artifact OpenSpec change:
+
+| Phase | Artifact | When to write |
+|---|---|---|
+| Why | `proposal.md` | First, before any technical decision |
+| What | `specs/<capability>/spec.md` | One per capability listed in the proposal; testable requirements |
+| How | `design.md` | Architectural decisions, alternatives considered, trade-offs |
+| Do | `tasks.md` | Checklist for the apply phase |
+
+A change starts at `openspec/changes/<name>/` and stays there until archived. Archive promotes the specs into `openspec/specs/<capability>/` as the live contract.
+
+### Validators
+
+Run before committing:
+
+```sh
+bash scripts/validate-catalog.sh
+bash scripts/validate-topology.sh
+bash scripts/validate-repo.sh .
+```
+
+CI runs all three on every push to `main` and every pull request — workflow at `.github/workflows/ci.yml`.
+
+If a change modifies `catalog.yaml`, `sync-graph.yaml`, or `runtime-allocation.yaml`/`memory-budgets.yaml` (when those land), expect downstream changes to sibling repos' `OWNERSHIP.yaml` files. Drift is caught by `validate-repo.sh` running in each sibling's CI (it fetches the latest validator + sources from this repo's `main`).
+
+### Conventions
+
+- All written artifacts (specs, ADRs, commits, PRs, GitHub issues) are in **English**.
+- Commit messages follow [Gitmoji](https://gitmoji.dev/) per the team convention.
+- One commit per OpenSpec artifact during the planning phase; one commit per task group during the apply phase.
+
+### Reference templates
+
+`openspec/specs/repository-conventions/templates/` carries the canonical `OWNERSHIP.yaml` and `AGENTS.md` every `rbrain-*` repository must derive from. Placeholders use POSIX shell syntax `${VAR}` and are resolved by the (future) `scripts/scaffold-repo.sh` tool — see `openspec/changes/scaffold-sibling-repos/`.

@@ -1,0 +1,6 @@
+context: codex
+owner: hoani.cross@gmail.com
+runtime: none
+max_rss_mb: 0
+depends_on: []
+publishes: []

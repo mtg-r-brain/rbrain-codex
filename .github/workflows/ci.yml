@@ -26,3 +26,6 @@ jobs:
 
       - name: Validate topology
         run: bash scripts/validate-topology.sh
+
+      - name: Self-validate codex repo
+        run: bash scripts/validate-repo.sh .
