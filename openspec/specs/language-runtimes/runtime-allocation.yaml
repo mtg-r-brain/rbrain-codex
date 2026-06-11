@@ -1,0 +1,16 @@
+# Authoritative per-context runtime allocation.
+# Source of truth for: which runtime each rbrain-* repo must use.
+# Spec: openspec/specs/language-runtimes/spec.md ("Frozen per-context runtime allocation").
+# Modifying any entry requires an OpenSpec change amending the spec.
+
+allocation:
+  gateway: rust
+  identity: rust
+  lexicon: rust
+  oracle: rust
+  forge: rust
+  chronicle: rust
+  cortex: python
+  app: typescript
+  deploy: none
+  codex: none

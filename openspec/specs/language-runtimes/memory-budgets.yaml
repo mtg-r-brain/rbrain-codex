@@ -1,0 +1,31 @@
+# Authoritative per-context memory budgets and the platform-wide ceiling.
+# Source of truth for: each rbrain-* repo's OWNERSHIP.yaml.max_rss_mb value
+# and the cross-context sum enforced at validation time.
+# Spec: openspec/specs/language-runtimes/spec.md ("Per-context memory budget",
+# "Platform-wide memory ceiling").
+# Modifying any value requires an OpenSpec change.
+
+# Per-bounded-context budgets (MB of RSS).
+# Sum of service budgets: 485 MB.
+budgets:
+  gateway: 35
+  identity: 25
+  lexicon: 30
+  oracle: 40
+  forge: 30
+  chronicle: 25
+  cortex: 200
+  app: 100
+  deploy: 0
+  codex: 0
+
+# External infrastructure budgets (MB of RSS).
+# Sum of external budgets: 346 MB.
+external:
+  postgres: 256
+  redis: 50
+  nats: 40
+
+# Platform-wide ceiling for a single-node deployment (MB of RSS).
+# Current sum: 831 MB (485 services + 346 external). Headroom: 193 MB.
+ceiling: 1024

@@ -1,0 +1,18 @@
+# Authoritative minimum versions for every runtime and core framework used
+# by an rbrain-* repository.
+# Source of truth for: the >= constraint CI must enforce on toolchains.
+# Spec: openspec/specs/language-runtimes/spec.md ("Minimum runtime and framework versions").
+# Bumping any floor requires an OpenSpec change.
+
+# Format: each entry holds the floor and the rationale captured in design.md.
+
+floors:
+  rust: "1.83.0"             # async traits in stable, let chains in match guards
+  python: "3.12.0"           # PEP 695 type aliases, faster startup, tomllib
+  node: "22.0.0"             # LTS line, native WebSocket, V8 12.x
+  nextjs: "15.0.0"           # App Router stable, Partial Prerendering, Turbopack dev
+  axum: "0.7.0"              # Tower 0.5 alignment, IntoResponse ergonomics
+  tokio: "1.40.0"            # stable tokio::task::Builder + runtime metrics
+  sqlx: "0.8.0"              # stable migration story, query!() macros
+  fastapi: "0.115.0"         # stable async lifespan, dependency-injection improvements
+  langgraph: "0.2.0"         # stable graph API, checkpointer interface
