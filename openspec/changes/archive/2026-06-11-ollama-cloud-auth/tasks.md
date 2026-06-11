@@ -5,6 +5,6 @@
 
 ## 2. Hand-off
 
-- [ ] 2.1 Commit, push, and confirm CI on `rbrain-codex` stays green.
-- [ ] 2.2 Archive this change via `openspec archive ollama-cloud-auth`.
+- [x] 2.1 Commit, push, and confirm CI on `rbrain-codex` stays green.
+- [x] 2.2 Archive this change via `openspec archive ollama-cloud-auth`.
 - [ ] 2.3 Follow-up in `rbrain-cortex`: update `AGENTS.md` to mention `OLLAMA_API_KEY` in the provider env enumeration. Tracked here for traceability; the commit lives in cortex.
