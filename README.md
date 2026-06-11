@@ -11,6 +11,10 @@ This repo is the **single source of truth** for who owns what across the ten `rb
 | What bounded contexts exist, and what do they own? | [`openspec/specs/bounded-contexts/catalog.yaml`](openspec/specs/bounded-contexts/catalog.yaml) |
 | Who calls whom over HTTP? | [`openspec/specs/service-topology/sync-graph.yaml`](openspec/specs/service-topology/sync-graph.yaml) |
 | What does the NATS subject naming convention look like? | [`openspec/specs/service-topology/nats-naming.md`](openspec/specs/service-topology/nats-naming.md) |
+| Which runtime does each context use? | [`openspec/specs/language-runtimes/runtime-allocation.yaml`](openspec/specs/language-runtimes/runtime-allocation.yaml) |
+| What memory budget per context, what platform ceiling? | [`openspec/specs/language-runtimes/memory-budgets.yaml`](openspec/specs/language-runtimes/memory-budgets.yaml) |
+| Which LLM providers are supported, which env vars do they read? | [`openspec/specs/llm-abstraction/providers.yaml`](openspec/specs/llm-abstraction/providers.yaml) |
+| Which PostgreSQL roles own which schema? | [`openspec/specs/data-stores/postgres-roles.yaml`](openspec/specs/data-stores/postgres-roles.yaml) |
 | What must every `rbrain-*` repo ship? | [`openspec/specs/repository-conventions/templates/`](openspec/specs/repository-conventions/templates/) |
 | What's currently being planned? | [`openspec/changes/`](openspec/changes/) |
 
@@ -38,9 +42,13 @@ The OpenSpec CLI shortcuts in use:
 CI runs the validators on every push to `main` and on every pull request. Run them locally before pushing:
 
 ```sh
-bash scripts/validate-catalog.sh    # 10 contexts, kebab-case, unique terms
-bash scripts/validate-topology.sh   # known nodes, DAG via tsort
-bash scripts/validate-repo.sh .     # this repo's own OWNERSHIP.yaml + mandatory files
+bash scripts/validate-catalog.sh        # 10 contexts, kebab-case, unique terms
+bash scripts/validate-topology.sh       # known nodes, DAG via tsort
+bash scripts/validate-runtimes.sh       # runtime allocation + memory budgets vs. ceiling
+bash scripts/validate-data-stores.sh    # 5 PG roles, schema-per-context, no cross-schema grants
+bash scripts/validate-subjects.sh       # NATS subject naming on every OWNERSHIP.yaml
+bash scripts/validate-llm-config.sh     # 3 LLM providers, env var coverage
+bash scripts/validate-repo.sh .         # this repo's own OWNERSHIP.yaml + mandatory files
 ```
 
 The validators require [`yq`](https://github.com/mikefarah/yq) (Go-based, v4+). Install via `brew install yq` on macOS.

@@ -29,8 +29,8 @@
 
 ## 5. Cross-capability follow-up
 
-- [ ] 5.1 Update `rbrain-codex/README.md` to point newcomers at the three new entry-point files (`runtime-allocation.yaml`, `memory-budgets.yaml`, `providers.yaml`) alongside the existing `catalog.yaml` and `sync-graph.yaml`.
-- [ ] 5.2 Update `rbrain-codex/AGENTS.md` to mention the new validators and how to run them locally.
+- [x] 5.1 Update `rbrain-codex/README.md` to point newcomers at the three new entry-point files (`runtime-allocation.yaml`, `memory-budgets.yaml`, `providers.yaml`) alongside the existing `catalog.yaml` and `sync-graph.yaml`.
+- [x] 5.2 Update `rbrain-codex/AGENTS.md` to mention the new validators and how to run them locally.
 
 ## 6. Hand-off
 

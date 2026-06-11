@@ -50,14 +50,18 @@ A change starts at `openspec/changes/<name>/` and stays there until archived. Ar
 Run before committing:
 
 ```sh
-bash scripts/validate-catalog.sh
-bash scripts/validate-topology.sh
-bash scripts/validate-repo.sh .
+bash scripts/validate-catalog.sh        # bounded-contexts/catalog.yaml
+bash scripts/validate-topology.sh       # service-topology/sync-graph.yaml (DAG check)
+bash scripts/validate-runtimes.sh       # language-runtimes YAMLs vs. catalog and ceiling
+bash scripts/validate-data-stores.sh    # data-stores/postgres-roles.yaml
+bash scripts/validate-subjects.sh       # NATS subjects across every OWNERSHIP.yaml
+bash scripts/validate-llm-config.sh     # llm-abstraction/providers.yaml
+bash scripts/validate-repo.sh .         # this repo's mandatory files + OWNERSHIP.yaml
 ```
 
-CI runs all three on every push to `main` and every pull request — workflow at `.github/workflows/ci.yml`.
+CI runs all seven on every push to `main` and every pull request — workflow at `.github/workflows/ci.yml`.
 
-If a change modifies `catalog.yaml`, `sync-graph.yaml`, or `runtime-allocation.yaml`/`memory-budgets.yaml` (when those land), expect downstream changes to sibling repos' `OWNERSHIP.yaml` files. Drift is caught by `validate-repo.sh` running in each sibling's CI (it fetches the latest validator + sources from this repo's `main`).
+If a change modifies `catalog.yaml`, `sync-graph.yaml`, `runtime-allocation.yaml`, or `memory-budgets.yaml`, expect downstream changes to sibling repos' `OWNERSHIP.yaml` files. Drift is caught by `validate-repo.sh` running in each sibling's CI (it fetches the latest validator + sources from this repo's `main`).
 
 ### Conventions
 
