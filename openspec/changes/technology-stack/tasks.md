@@ -9,10 +9,10 @@
 
 ## 2. data-stores capability
 
-- [ ] 2.1 Create `openspec/specs/data-stores/postgres-roles.yaml` listing the per-context PostgreSQL roles (`identity`, `lexicon`, `oracle`, `forge`, `chronicle`), each with its owned schema and the grant set (`USAGE` on schema, full DML on schema's relations, no superuser, no cross-schema grant).
-- [ ] 2.2 Document the `pgvector` and `tsvector` baseline usage policy in `openspec/specs/data-stores/postgres-baseline.md` (one paragraph each on extension activation, schema bootstrap, role provisioning).
-- [ ] 2.3 Document the Redis usage policy in `openspec/specs/data-stores/redis-baseline.md` (cache only; key naming `<ctx>:<purpose>:<id>`; TTLs mandatory; no persistence guarantees).
-- [ ] 2.4 Write `scripts/validate-data-stores.sh` that asserts each persistent context (`identity`, `lexicon`, `oracle`, `forge`, `chronicle`) is listed in `postgres-roles.yaml` and that every role's grants match the no-cross-schema rule.
+- [x] 2.1 Create `openspec/specs/data-stores/postgres-roles.yaml` listing the per-context PostgreSQL roles (`identity`, `lexicon`, `oracle`, `forge`, `chronicle`), each with its owned schema and the grant set (`USAGE` on schema, full DML on schema's relations, no superuser, no cross-schema grant).
+- [x] 2.2 Document the `pgvector` and `tsvector` baseline usage policy in `openspec/specs/data-stores/postgres-baseline.md` (one paragraph each on extension activation, schema bootstrap, role provisioning).
+- [x] 2.3 Document the Redis usage policy in `openspec/specs/data-stores/redis-baseline.md` (cache only; key naming `<ctx>:<purpose>:<id>`; TTLs mandatory; no persistence guarantees).
+- [x] 2.4 Write `scripts/validate-data-stores.sh` that asserts each persistent context (`identity`, `lexicon`, `oracle`, `forge`, `chronicle`) is listed in `postgres-roles.yaml` and that every role's grants match the no-cross-schema rule.
 
 ## 3. messaging-runtime capability
 

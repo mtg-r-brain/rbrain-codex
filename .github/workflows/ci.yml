@@ -30,5 +30,8 @@ jobs:
       - name: Validate runtimes
         run: bash scripts/validate-runtimes.sh
 
+      - name: Validate data stores
+        run: bash scripts/validate-data-stores.sh
+
       - name: Self-validate codex repo
         run: bash scripts/validate-repo.sh .

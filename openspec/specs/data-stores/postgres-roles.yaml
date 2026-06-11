@@ -1,0 +1,42 @@
+# Authoritative PostgreSQL role configuration for persistent rbrain-* contexts.
+# Source of truth for: which role owns which schema, with what privileges.
+# Spec: openspec/specs/data-stores/spec.md ("Schema ownership per bounded context").
+# Modifying any entry requires an OpenSpec change.
+
+# Each role:
+#   schema:      the single PostgreSQL schema this role owns
+#   privileges:  the DML grant set on the schema's relations (USAGE on the schema
+#                itself is always required)
+#   superuser:   MUST be false; no rbrain-* role runs as superuser
+#   cross_schema: MUST be [] (empty); cross-schema reads are forbidden
+
+roles:
+  identity:
+    schema: identity
+    privileges: [USAGE, SELECT, INSERT, UPDATE, DELETE]
+    superuser: false
+    cross_schema: []
+
+  lexicon:
+    schema: lexicon
+    privileges: [USAGE, SELECT, INSERT, UPDATE, DELETE]
+    superuser: false
+    cross_schema: []
+
+  oracle:
+    schema: oracle
+    privileges: [USAGE, SELECT, INSERT, UPDATE, DELETE]
+    superuser: false
+    cross_schema: []
+
+  forge:
+    schema: forge
+    privileges: [USAGE, SELECT, INSERT, UPDATE, DELETE]
+    superuser: false
+    cross_schema: []
+
+  chronicle:
+    schema: chronicle
+    privileges: [USAGE, SELECT, INSERT, UPDATE, DELETE]
+    superuser: false
+    cross_schema: []
