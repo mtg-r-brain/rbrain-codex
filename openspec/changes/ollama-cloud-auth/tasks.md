@@ -1,7 +1,7 @@
 ## 1. providers.yaml update
 
-- [ ] 1.1 Add `OLLAMA_API_KEY` to `openspec/specs/llm-abstraction/providers.yaml` under `ollama.env.optional`.
-- [ ] 1.2 Run `bash scripts/validate-llm-config.sh` locally to confirm the catalog still validates (exactly three providers, each with at least one required env var).
+- [x] 1.1 Add `OLLAMA_API_KEY` to `openspec/specs/llm-abstraction/providers.yaml` under `ollama.env.optional`.
+- [x] 1.2 Run `bash scripts/validate-llm-config.sh` locally to confirm the catalog still validates (exactly three providers, each with at least one required env var).
 
 ## 2. Hand-off
 

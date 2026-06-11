@@ -26,7 +26,11 @@ providers:
       required:
         - OLLAMA_BASE_URL
         - OLLAMA_MODEL
-      optional: []
+      optional:
+        # Bearer-token auth for gated deployments (Ollama Cloud). When set,
+        # the provider attaches `Authorization: Bearer <key>` to every
+        # request; when unset, local-instance behavior is unchanged.
+        - OLLAMA_API_KEY
 
   openai:
     sdk: openai
