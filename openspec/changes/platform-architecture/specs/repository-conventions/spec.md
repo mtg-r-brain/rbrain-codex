@@ -20,7 +20,8 @@ Each `OWNERSHIP.yaml` file SHALL contain the following top-level fields:
 
 - `context`: the bounded context name (string, kebab-case, MUST match `rbrain-<context>` repo name)
 - `owner`: the human or team primarily responsible (string)
-- `runtime`: the primary runtime, one of `rust`, `python`, `typescript`, `none` (for codex and deploy)
+- `runtime`: the primary runtime, one of `rust`, `python`, `typescript`, `none` (for codex and deploy). MUST match the value declared for this context in `language-runtimes/runtime-allocation.yaml`.
+- `max_rss_mb`: the memory budget for this repo's primary process, as an integer in megabytes. MUST match the value declared for this context in `language-runtimes/memory-budgets.yaml`. SHALL be `0` for contexts whose `runtime` is `none`.
 - `depends_on`: a list of bounded context names this repo calls synchronously (list of strings, MUST be a subset of contexts declared as callees in `sync-graph.yaml` for this caller)
 - `publishes`: a list of NATS subject patterns this repo emits (list of strings, each matching `rbrain.<this-context>.<event-name>`)
 
@@ -29,12 +30,22 @@ Additional fields are permitted but tooling SHALL ignore them.
 #### Scenario: Tooling reads OWNERSHIP.yaml
 
 - **WHEN** `rbrain-deploy` discovers services to provision
-- **THEN** it SHALL parse `OWNERSHIP.yaml` from each repository and SHALL use the five fields above; it SHALL NOT hardcode the list of repositories
+- **THEN** it SHALL parse `OWNERSHIP.yaml` from each repository and SHALL use the six fields above; it SHALL NOT hardcode the list of repositories
 
 #### Scenario: Declared dependencies match the topology
 
 - **WHEN** `OWNERSHIP.yaml` declares `depends_on: [lexicon, oracle]` for the `cortex` repo
 - **THEN** validation tooling SHALL confirm that `cortex → lexicon` and `cortex → oracle` are both edges in `sync-graph.yaml`; a mismatch SHALL fail validation
+
+#### Scenario: Runtime matches the platform allocation
+
+- **WHEN** an `rbrain-*` repo's `OWNERSHIP.runtime` does not match the value listed for that context in `language-runtimes/runtime-allocation.yaml`
+- **THEN** validation tooling SHALL fail with a clear error naming both sources
+
+#### Scenario: Memory budget matches the platform allocation
+
+- **WHEN** an `rbrain-*` repo's `OWNERSHIP.max_rss_mb` does not match the value listed for that context in `language-runtimes/memory-budgets.yaml`
+- **THEN** validation tooling SHALL fail with a clear error naming both sources
 
 ### Requirement: AGENTS.md baseline content
 

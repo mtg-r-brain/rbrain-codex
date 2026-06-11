@@ -29,9 +29,8 @@
 
 ## 5. Cross-capability follow-up
 
-- [ ] 5.1 Open an OpenSpec change `extend-ownership-schema` whose scope is to amend `repository-conventions`'s `OWNERSHIP.yaml schema` requirement to add `runtime` (already implicitly required) and `max_rss_mb` (new) as MANDATORY fields with their validation rules. This change does not perform that amendment itself.
-- [ ] 5.2 Update `rbrain-codex/README.md` to point newcomers at the three new entry-point files (`runtime-allocation.yaml`, `memory-budgets.yaml`, `providers.yaml`) alongside the existing `catalog.yaml` and `sync-graph.yaml`.
-- [ ] 5.3 Update `rbrain-codex/AGENTS.md` to mention the new validators and how to run them locally.
+- [ ] 5.1 Update `rbrain-codex/README.md` to point newcomers at the three new entry-point files (`runtime-allocation.yaml`, `memory-budgets.yaml`, `providers.yaml`) alongside the existing `catalog.yaml` and `sync-graph.yaml`.
+- [ ] 5.2 Update `rbrain-codex/AGENTS.md` to mention the new validators and how to run them locally.
 
 ## 6. Hand-off
 
