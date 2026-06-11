@@ -1,10 +1,10 @@
 ## 1. scaffold-templates capability — rust-service
 
-- [ ] 1.1 Create `openspec/specs/scaffold-templates/templates/rust-service/Cargo.toml` declaring a single binary crate named `${CONTEXT_NAME}` pinning Axum `0.7`, Tokio `1.40` with `["rt-multi-thread", "macros"]`, and Tower 0.5.
-- [ ] 1.2 Create `openspec/specs/scaffold-templates/templates/rust-service/src/main.rs` with a minimal Axum app exposing `GET /health` returning `{"status":"ok","context":"${CONTEXT_NAME}"}` and binding `0.0.0.0:8080`.
-- [ ] 1.3 Create the template's `README.md`, `AGENTS.md`, `OWNERSHIP.yaml` (with `${RUNTIME}`, `${MAX_RSS_MB}`, `${CONTEXT_NAME}`, `${CALLEES}`, `${PUBLISHES}` placeholders), `.gitignore` (Rust standard), and `rust-toolchain.toml` pinning `>= 1.83.0`.
-- [ ] 1.4 Create `.github/workflows/ci.yml` running `cargo build --locked`, `cargo clippy --all-targets -- -D warnings`, `cargo fmt --check`, then fetching `validate-repo.sh` from `https://raw.githubusercontent.com/<owner>/rbrain-codex/main/scripts/validate-repo.sh` and executing it.
-- [ ] 1.5 Create a multi-stage `Dockerfile` (builder on `rust:1.83-slim`, runtime on `gcr.io/distroless/cc-debian12`) producing a `~10 MB` image that serves `/health`.
+- [x] 1.1 Create `openspec/specs/scaffold-templates/templates/rust-service/Cargo.toml` declaring a single binary crate named `${CONTEXT_NAME}` pinning Axum `0.7`, Tokio `1.40` with `["rt-multi-thread", "macros"]`, and Tower 0.5.
+- [x] 1.2 Create `openspec/specs/scaffold-templates/templates/rust-service/src/main.rs` with a minimal Axum app exposing `GET /health` returning `{"status":"ok","context":"${CONTEXT_NAME}"}` and binding `0.0.0.0:8080`.
+- [x] 1.3 Create the template's `README.md`, `AGENTS.md`, `OWNERSHIP.yaml` (with `${RUNTIME}`, `${MAX_RSS_MB}`, `${CONTEXT_NAME}`, `${CALLEES}`, `${PUBLISHES}` placeholders), `.gitignore` (Rust standard), and `rust-toolchain.toml` pinning `>= 1.83.0`.
+- [x] 1.4 Create `.github/workflows/ci.yml` running `cargo build --locked`, `cargo clippy --all-targets -- -D warnings`, `cargo fmt --check`, then fetching `validate-repo.sh` from `https://raw.githubusercontent.com/<owner>/rbrain-codex/main/scripts/validate-repo.sh` and executing it.
+- [x] 1.5 Create a multi-stage `Dockerfile` (builder on `rust:1.83-slim`, runtime on `gcr.io/distroless/cc-debian12`) producing a `~10 MB` image that serves `/health`.
 
 ## 2. scaffold-templates capability — python-service
 
