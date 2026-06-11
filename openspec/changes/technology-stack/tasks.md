@@ -16,9 +16,9 @@
 
 ## 3. messaging-runtime capability
 
-- [ ] 3.1 Create `openspec/specs/messaging-runtime/jetstream-policy.yaml` declaring the default stream configuration (`retention: limits`, `max_age: 7 days`, `storage: file`, `discard: old`) and the default consumer configuration (`type: pull`, `ack_policy: explicit`, `max_deliver: 5`).
-- [ ] 3.2 Document the reserved subject prefixes in `openspec/specs/messaging-runtime/subject-reservations.md`: `rbrain.<ctx>.*` for context-published events, `rbrain.system.*` reserved for `deploy`.
-- [ ] 3.3 Write `scripts/validate-subjects.sh` that scans every repo's `OWNERSHIP.publishes` and asserts each subject matches `^rbrain\.([a-z-]+)\.([a-z][a-z0-9-]*)$` with the first segment being the publishing context (or `system` only for `deploy`).
+- [x] 3.1 Create `openspec/specs/messaging-runtime/jetstream-policy.yaml` declaring the default stream configuration (`retention: limits`, `max_age: 7 days`, `storage: file`, `discard: old`) and the default consumer configuration (`type: pull`, `ack_policy: explicit`, `max_deliver: 5`).
+- [x] 3.2 Document the reserved subject prefixes in `openspec/specs/messaging-runtime/subject-reservations.md`: `rbrain.<ctx>.*` for context-published events, `rbrain.system.*` reserved for `deploy`.
+- [x] 3.3 Write `scripts/validate-subjects.sh` that scans every repo's `OWNERSHIP.publishes` and asserts each subject matches `^rbrain\.([a-z-]+)\.([a-z][a-z0-9-]*)$` with the first segment being the publishing context (or `system` only for `deploy`).
 
 ## 4. llm-abstraction capability
 

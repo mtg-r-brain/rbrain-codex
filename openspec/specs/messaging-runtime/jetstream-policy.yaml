@@ -1,0 +1,24 @@
+# Authoritative default JetStream policy for rbrain-* cross-context events.
+# Source of truth for: how rbrain-deploy configures every stream and consumer
+# unless an explicit per-stream override is documented in a sibling spec.
+# Spec: openspec/specs/messaging-runtime/spec.md ("At-least-once delivery with replay").
+
+# Defaults applied to every JetStream stream created on behalf of rbrain-*
+# event publishing. Overrides for a specific subject require an OpenSpec change.
+stream_defaults:
+  retention: limits        # bounded by max_age + max_bytes; old messages dropped
+  storage: file            # disk-backed, survives broker restart
+  discard: old             # under pressure, drop oldest first
+  max_age: 7d              # 7-day retention floor for replay
+  max_bytes: 1073741824    # 1 GiB per stream (per-subject sub-budgets handled
+                           # in a future deployment-topology spec)
+  num_replicas: 1          # v1 single-node; bump to 3 with the cluster mode
+
+# Defaults applied to every consumer subscribed to an rbrain-* stream.
+# Overrides for a specific consumer require an OpenSpec change.
+consumer_defaults:
+  type: pull               # required by the spec; no push consumers for durable work
+  ack_policy: explicit     # consumer ACKs each message it handles
+  max_deliver: 5           # retry up to 5 times before sending to a DLQ
+  ack_wait: 30s            # if no ACK within 30s, redeliver
+  durable: true            # consumer state survives broker restart
