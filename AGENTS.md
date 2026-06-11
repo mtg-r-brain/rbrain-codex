@@ -75,6 +75,12 @@ Smoke tests for the scaffolder live at `scripts/tests/scaffold-repo/run.sh`.
 
 If a change modifies `catalog.yaml`, `sync-graph.yaml`, `runtime-allocation.yaml`, or `memory-budgets.yaml`, expect downstream changes to sibling repos' `OWNERSHIP.yaml` files. Drift is caught by `validate-repo.sh` running in each sibling's CI (it fetches the latest validator + sources from this repo's `main`).
 
+### Per-sibling public-API specs
+
+Each sibling's public HTTP surface lives in codex under a capability named `<context>-api` — for example, `lexicon-api` holds the contract for `rbrain-lexicon`. When a sibling ships a new public endpoint, the PR proposing that endpoint SHALL include a MODIFIED delta on its `<context>-api` capability in codex.
+
+This convention applies to public-facing siblings only. `deploy` and `codex` have no HTTP surface and no `<context>-api` capability. Internal specs (Scryfall sync internals, search algorithm details, etc.) live in the sibling repo's own `openspec/` — codex carries only the cross-context contract.
+
 ### Conventions
 
 - All written artifacts (specs, ADRs, commits, PRs, GitHub issues) are in **English**.

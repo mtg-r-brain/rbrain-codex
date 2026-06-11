@@ -16,6 +16,7 @@ This repo is the **single source of truth** for who owns what across the ten `rb
 | Which LLM providers are supported, which env vars do they read? | [`openspec/specs/llm-abstraction/providers.yaml`](openspec/specs/llm-abstraction/providers.yaml) |
 | Which PostgreSQL roles own which schema? | [`openspec/specs/data-stores/postgres-roles.yaml`](openspec/specs/data-stores/postgres-roles.yaml) |
 | What must every `rbrain-*` repo ship? | [`openspec/specs/repository-conventions/templates/`](openspec/specs/repository-conventions/templates/) |
+| What HTTP contract does each sibling expose? | [`openspec/specs/<context>-api/spec.md`](openspec/specs/) (e.g. `lexicon-api`) |
 | What's currently being planned? | [`openspec/changes/`](openspec/changes/) |
 
 ## Workflow
