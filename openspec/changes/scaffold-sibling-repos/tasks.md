@@ -17,12 +17,12 @@
 
 ## 3. scaffold-templates capability — typescript-app
 
-- [ ] 3.1 Create `openspec/specs/scaffold-templates/templates/typescript-app/package.json` declaring Next.js 15, React 18, TypeScript 5.x, pnpm as the manager, and the scripts (`build`, `lint`, `dev`, `start`, `tsc:check`).
-- [ ] 3.2 Create `openspec/specs/scaffold-templates/templates/typescript-app/src/app/page.tsx` rendering a minimal homepage displaying `${CONTEXT_NAME}` and a short placeholder paragraph; the rest of the App Router skeleton (`layout.tsx`, `globals.css`) is included.
-- [ ] 3.3 Create the template's `README.md`, `AGENTS.md`, `OWNERSHIP.yaml`, `.gitignore` (Node + Next.js standard, keep `pnpm-lock.yaml`), `.eslintrc.cjs`, `.prettierrc.json`, `tsconfig.json`.
-- [ ] 3.4 Create `.github/workflows/ci.yml` running `pnpm install --frozen-lockfile`, `pnpm tsc --noEmit`, `pnpm lint`, `pnpm prettier --check .`, then fetching and running `validate-repo.sh`.
-- [ ] 3.5 Create a multi-stage `Dockerfile` (builder on `node:22-alpine` running `pnpm build`, runtime on `node:22-alpine` running `pnpm start`) producing an image that serves the homepage.
-- [ ] 3.6 Generate the initial `pnpm-lock.yaml` against the dependency set and commit it.
+- [x] 3.1 Create `openspec/specs/scaffold-templates/templates/typescript-app/package.json` declaring Next.js 15, React 18, TypeScript 5.x, pnpm as the manager, and the scripts (`build`, `lint`, `dev`, `start`, `tsc:check`).
+- [x] 3.2 Create `openspec/specs/scaffold-templates/templates/typescript-app/src/app/page.tsx` rendering a minimal homepage displaying `${CONTEXT_NAME}` and a short placeholder paragraph; the rest of the App Router skeleton (`layout.tsx`, `globals.css`) is included.
+- [x] 3.3 Create the template's `README.md`, `AGENTS.md`, `OWNERSHIP.yaml`, `.gitignore` (Node + Next.js standard, keep `pnpm-lock.yaml`), `.eslintrc.cjs`, `.prettierrc.json`, `tsconfig.json`.
+- [x] 3.4 Create `.github/workflows/ci.yml` running `pnpm install --frozen-lockfile`, `pnpm tsc --noEmit`, `pnpm lint`, `pnpm prettier --check .`, then fetching and running `validate-repo.sh`.
+- [x] 3.5 Create a multi-stage `Dockerfile` (builder on `node:22-alpine` running `pnpm build`, runtime on `node:22-alpine` running `pnpm start`) producing an image that serves the homepage.
+- [x] 3.6 Generate the initial `pnpm-lock.yaml` against the dependency set and commit it.
 
 ## 4. scaffold-procedure capability — script
 
