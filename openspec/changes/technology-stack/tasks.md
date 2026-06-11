@@ -34,5 +34,5 @@
 
 ## 6. Hand-off
 
-- [ ] 6.1 Confirm CI runs all six validators (`validate-catalog`, `validate-topology`, `validate-repo`, `validate-runtimes`, `validate-data-stores`, `validate-subjects`, `validate-llm-config`) on push and PR.
+- [x] 6.1 Confirm CI runs all six validators (`validate-catalog`, `validate-topology`, `validate-repo`, `validate-runtimes`, `validate-data-stores`, `validate-subjects`, `validate-llm-config`) on push and PR.
 - [ ] 6.2 Archive this change via `openspec archive technology-stack` once tasks 1.x–5.x are complete and CI is green.
