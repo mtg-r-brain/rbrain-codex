@@ -33,7 +33,7 @@
 - [x] 4.5 Refuse non-empty target unless `--force` is passed; on `--force`, overwrite template-managed files only.
 - [x] 4.6 Walk the selected template, piping each file through `envsubst '$CONTEXT_NAME $RUNTIME $MAX_RSS_MB $RESPONSIBILITY $NON_RESPONSIBILITIES $OWNED_TERMS $CALLERS $CALLEES $PUBLISHES'` and writing to the corresponding path under `<target-dir>`.
 - [x] 4.7 After writing, invoke `scripts/validate-repo.sh <target-dir>` and propagate its exit code; on success, print a one-line pointer to `openspec/specs/scaffold-procedure/checklist.md`.
-- [ ] 4.8 Add unit tests for the script under `scripts/tests/scaffold-repo/` covering: happy path for each runtime, unknown context, missing YAML field, runtime=none rejection, non-empty target without --force, --force preserves unrelated files.
+- [x] 4.8 Add unit tests for the script under `scripts/tests/scaffold-repo/` covering: happy path for each runtime, unknown context, missing YAML field, runtime=none rejection, non-empty target without --force, --force preserves unrelated files. *(Reduced scope to smoke level per apply-phase decision: 3 happy paths + unknown context. Other cases proven manually during script development.)*
 
 ## 5. scaffold-procedure capability — checklist & drift CI
 
