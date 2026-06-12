@@ -12,6 +12,6 @@
 
 ## 3. CI and archive
 
-- [ ] 3.1 Push the 4 planning commits; verify codex CI workflow goes green.
-- [ ] 3.2 Run `/opsx:archive port-env-var-convention` to promote the ADDED delta into `openspec/specs/repository-conventions/spec.md`.
-- [ ] 3.3 Push the archive commit; verify codex CI stays green.
+- [x] 3.1 Push the 4 planning commits; verify codex CI workflow goes green.
+- [x] 3.2 Run `/opsx:archive port-env-var-convention` to promote the ADDED delta into `openspec/specs/repository-conventions/spec.md`.
+- [x] 3.3 Push the archive commit; verify codex CI stays green.
