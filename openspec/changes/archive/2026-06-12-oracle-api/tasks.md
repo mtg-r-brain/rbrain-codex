@@ -6,9 +6,9 @@
 
 ## 2. CI and archive
 
-- [ ] 2.1 Push the 4 planning commits; verify codex CI workflow goes green (8 validators including the new validate-api-closure.sh — which SHALL pass since the closure clause is in scenario form)
-- [ ] 2.2 Run `/opsx:archive oracle-api` to promote the ADDED delta into `openspec/specs/oracle-api/spec.md`
-- [ ] 2.3 Push the archive commit; verify codex CI stays green
+- [x] 2.1 Push the 4 planning commits; verify codex CI workflow goes green (8 validators including the new validate-api-closure.sh — which SHALL pass since the closure clause is in scenario form)
+- [x] 2.2 Run `/opsx:archive oracle-api` to promote the ADDED delta into `openspec/specs/oracle-api/spec.md`
+- [x] 2.3 Push the archive commit; verify codex CI stays green
 
 ## 3. Companion implementation
 
