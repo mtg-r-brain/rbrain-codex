@@ -6,9 +6,9 @@
 
 ## 2. CI and archive
 
-- [ ] 2.1 Push the 4 planning commits; verify codex CI workflow goes green (8 validators + scaffold-drift + the new validate-baselines.sh; validate-api-closure.sh picks up the new capability automatically)
-- [ ] 2.2 Run `/opsx:archive identity-api` to promote the ADDED delta into `openspec/specs/identity-api/spec.md`
-- [ ] 2.3 Push the archive commit; verify codex CI stays green
+- [x] 2.1 Push the 4 planning commits; verify codex CI workflow goes green (8 validators + scaffold-drift + the new validate-baselines.sh; validate-api-closure.sh picks up the new capability automatically)
+- [x] 2.2 Run `/opsx:archive identity-api` to promote the ADDED delta into `openspec/specs/identity-api/spec.md`
+- [x] 2.3 Push the archive commit; verify codex CI stays green
 
 ## 3. Companion implementation
 
