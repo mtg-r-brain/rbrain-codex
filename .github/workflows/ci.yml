@@ -39,6 +39,9 @@ jobs:
       - name: Validate LLM config
         run: bash scripts/validate-llm-config.sh
 
+      - name: Validate <context>-api closure clauses
+        run: bash scripts/validate-api-closure.sh
+
       - name: Self-validate codex repo
         run: bash scripts/validate-repo.sh .
 
