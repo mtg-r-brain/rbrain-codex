@@ -12,13 +12,17 @@ async fn main() {
         .init();
 
     let app = Router::new().route("/health", get(health));
-    let addr = SocketAddr::from(([0, 0, 0, 0], 8080));
+    let port: u16 = std::env::var("PORT")
+        .ok()
+        .and_then(|s| s.parse().ok())
+        .unwrap_or(8080);
+    let addr = SocketAddr::from(([0, 0, 0, 0], port));
 
     tracing::info!(%addr, context = CONTEXT_NAME, "starting rbrain service");
 
     let listener = tokio::net::TcpListener::bind(addr)
         .await
-        .expect("bind 0.0.0.0:8080");
+        .unwrap_or_else(|err| panic!("bind 0.0.0.0:{port}: {err}"));
 
     axum::serve(listener, app)
         .with_graceful_shutdown(shutdown_signal())
