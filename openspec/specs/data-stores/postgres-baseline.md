@@ -24,9 +24,9 @@ syntax), not via triggers.
 
 ## Schema bootstrap
 
-Five schemas are owned, one per persistent bounded context: `identity`,
-`lexicon`, `oracle`, `forge`, `chronicle`. They are created by `rbrain-deploy`
-at first deployment:
+Six schemas are owned, one per persistent bounded context: `identity`,
+`lexicon`, `oracle`, `forge`, `chronicle`, `cortex`. They are created by
+`rbrain-deploy` at first deployment:
 
 ```sql
 CREATE SCHEMA IF NOT EXISTS identity;
@@ -34,16 +34,16 @@ CREATE SCHEMA IF NOT EXISTS lexicon;
 CREATE SCHEMA IF NOT EXISTS oracle;
 CREATE SCHEMA IF NOT EXISTS forge;
 CREATE SCHEMA IF NOT EXISTS chronicle;
+CREATE SCHEMA IF NOT EXISTS cortex;
 ```
 
 Each schema's tables, indexes, and types are managed by the owning context's
-migrations (SQLx for Rust services, Alembic for `cortex` — though `cortex` is
-not in this list because it owns no schema). The migrations run at service
-startup or via a dedicated migration job in production.
+migrations (SQLx for Rust services, Alembic for `cortex`). The migrations run
+at service startup or via a dedicated migration job in production.
 
 ## Role provisioning
 
-Five roles are provisioned at bootstrap, one per persistent context. Their
+Six roles are provisioned at bootstrap, one per persistent context. Their
 exact privileges are declared in `postgres-roles.yaml`. The invariants:
 
 - Each role owns exactly one schema, matching its name (`identity` role owns

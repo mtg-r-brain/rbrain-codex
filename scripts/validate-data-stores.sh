@@ -2,8 +2,8 @@
 # Validate openspec/specs/data-stores/postgres-roles.yaml.
 # Spec: openspec/specs/data-stores/spec.md.
 # Asserts:
-#   - the five persistent contexts (identity, lexicon, oracle, forge,
-#     chronicle) each have a role declared
+#   - the six persistent contexts (identity, lexicon, oracle, forge,
+#     chronicle, cortex) each have a role declared
 #   - each role's schema matches its own name (single-schema ownership)
 #   - each role holds USAGE plus DML privileges (SELECT/INSERT/UPDATE/DELETE)
 #   - no role declares superuser: true
@@ -13,7 +13,7 @@
 set -euo pipefail
 
 ROLES="${ROLES:-openspec/specs/data-stores/postgres-roles.yaml}"
-EXPECTED_ROLES=(identity lexicon oracle forge chronicle)
+EXPECTED_ROLES=(identity lexicon oracle forge chronicle cortex)
 REQUIRED_PRIVS=(USAGE SELECT INSERT UPDATE DELETE)
 
 die() {

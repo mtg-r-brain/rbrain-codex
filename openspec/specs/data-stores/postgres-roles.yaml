@@ -40,3 +40,9 @@ roles:
     privileges: [USAGE, SELECT, INSERT, UPDATE, DELETE]
     superuser: false
     cross_schema: []
+
+  cortex:
+    schema: cortex
+    privileges: [USAGE, SELECT, INSERT, UPDATE, DELETE]
+    superuser: false
+    cross_schema: []

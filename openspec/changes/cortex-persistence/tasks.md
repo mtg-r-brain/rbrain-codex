@@ -5,9 +5,9 @@
 
 ## 2. Codex configuration updates (apply phase, codex side)
 
-- [ ] 2.1 Update `openspec/specs/data-stores/postgres-roles.yaml`: add `cortex` entry with schema `cortex`, full DML privileges, `superuser: false`, `cross_schema: []`
-- [ ] 2.2 Update `openspec/specs/data-stores/postgres-baseline.md`: add `CREATE SCHEMA IF NOT EXISTS cortex;` to the bootstrap SQL block; remove the parenthetical "though `cortex` is not in this list because it owns no schema" (line ~41) which becomes false
-- [ ] 2.3 Verify codex's existing `scripts/validate-data-stores.sh` (or equivalent validator) does not need code changes — it iterates the YAML data; the new entry is picked up automatically
+- [x] 2.1 Update `openspec/specs/data-stores/postgres-roles.yaml`: add `cortex` entry with schema `cortex`, full DML privileges, `superuser: false`, `cross_schema: []`
+- [x] 2.2 Update `openspec/specs/data-stores/postgres-baseline.md`: add `CREATE SCHEMA IF NOT EXISTS cortex;` to the bootstrap SQL block; remove the parenthetical "though `cortex` is not in this list because it owns no schema" (line ~41) which becomes false
+- [x] 2.3 Update `scripts/validate-data-stores.sh`: extend `EXPECTED_ROLES` from `(identity lexicon oracle forge chronicle)` to include `cortex`; the header comment goes from "five persistent contexts" to "six" — the validator's contract has to track the spec list
 - [ ] 2.4 Commit codex apply: `📝 docs(cortex-persistence): list cortex schema/role in postgres-roles + baseline`
 
 ## 3. Codex CI
