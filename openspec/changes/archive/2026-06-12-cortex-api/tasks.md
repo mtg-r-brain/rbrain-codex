@@ -14,13 +14,13 @@
 
 ## 3. Validation
 
-- [ ] 3.1 `openspec validate cortex-api --strict` clean (no warnings)
-- [ ] 3.2 `openspec status --change cortex-api --json` reports `isComplete: true` after artifacts are in place
-- [ ] 3.3 No existing codex capability spec needs a MODIFIED delta (audited against: bounded-contexts, service-topology, repository-conventions, llm-abstraction, data-stores, lexicon-api, scaffold-templates, scaffold-procedure)
+- [x] 3.1 `openspec validate cortex-api --strict` clean (no warnings)
+- [x] 3.2 `openspec status --change cortex-api --json` reports `isComplete: true` after artifacts are in place
+- [x] 3.3 No existing codex capability spec needs a MODIFIED delta (audited against: bounded-contexts, service-topology, repository-conventions, llm-abstraction, data-stores, lexicon-api, scaffold-templates, scaffold-procedure)
 
 ## 4. CI and archive
 
-- [ ] 4.1 Push the 4 planning commits; verify the codex CI workflow (7 validators + scaffold-drift) goes green
-- [ ] 4.2 Run `/opsx:archive cortex-api` to promote the delta into `openspec/specs/cortex-api/spec.md`
+- [x] 4.1 Push the 4 planning commits; verify the codex CI workflow (7 validators + scaffold-drift) goes green
+- [x] 4.2 Run `/opsx:archive cortex-api` to promote the delta into `openspec/specs/cortex-api/spec.md`
 - [ ] 4.3 Push the archive commit; verify CI stays green
 - [ ] 4.4 Update the platform handoff drawer in MemPalace (`mempalace_update_drawer` on `rbrain-codex/task-handoff`) marking ticket #2 done; re-list remaining queued tickets
