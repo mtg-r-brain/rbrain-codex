@@ -7,9 +7,9 @@
 
 ## 2. CI and archive
 
-- [ ] 2.1 Push the 4 planning commits; verify codex CI workflow goes green (validate-api-closure.sh SHALL still pass — the canonical closure phrasing is intact)
-- [ ] 2.2 Run `/opsx:archive oracle-api-admin-carveout` to promote the MODIFIED delta into `openspec/specs/oracle-api/spec.md`
-- [ ] 2.3 Push the archive commit; verify codex CI stays green
+- [x] 2.1 Push the 4 planning commits; verify codex CI workflow goes green (validate-api-closure.sh SHALL still pass — the canonical closure phrasing is intact)
+- [x] 2.2 Run `/opsx:archive oracle-api-admin-carveout` to promote the MODIFIED delta into `openspec/specs/oracle-api/spec.md`
+- [x] 2.3 Push the archive commit; verify codex CI stays green
 
 ## 3. Unblocks
 
