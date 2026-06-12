@@ -16,26 +16,26 @@
 
 ## 4. Cortex code — Alembic infrastructure
 
-- [ ] 4.1 Add `asyncpg >= 0.30` and `alembic >= 1.13` to `rbrain-cortex/pyproject.toml`; `uv sync`
-- [ ] 4.2 Add `rbrain-cortex/alembic.ini` (script_location = `alembic`, file_template, version_locations)
-- [ ] 4.3 Add `rbrain-cortex/alembic/env.py` configured for async migrations (asyncpg engine, `run_migrations_online()` async pattern); reads `DATABASE_URL` from env
-- [ ] 4.4 Add `rbrain-cortex/alembic/script.py.mako` (standard Alembic template, raw SQL via `op.execute`)
-- [ ] 4.5 Add `rbrain-cortex/alembic/versions/0001_create_conversations.py`:
+- [x] 4.1 Add `asyncpg >= 0.30` and `alembic >= 1.13` to `rbrain-cortex/pyproject.toml`; `uv sync`
+- [x] 4.2 Add `rbrain-cortex/alembic.ini` (script_location = `alembic`, file_template, version_locations)
+- [x] 4.3 Add `rbrain-cortex/alembic/env.py` configured for async migrations (asyncpg engine, `run_migrations_online()` async pattern); reads `DATABASE_URL` from env
+- [x] 4.4 Add `rbrain-cortex/alembic/script.py.mako` (standard Alembic template, raw SQL via `op.execute`)
+- [x] 4.5 Add `rbrain-cortex/alembic/versions/0001_create_conversations.py`:
   - `op.execute("CREATE SCHEMA IF NOT EXISTS cortex")`
   - `op.execute("""CREATE TABLE cortex.conversations (id uuid PRIMARY KEY, created_at timestamptz NOT NULL DEFAULT now(), updated_at timestamptz NOT NULL DEFAULT now(), messages jsonb NOT NULL DEFAULT '[]'::jsonb)""")`
   - downgrade drops the table and (optionally) the schema if empty
 
 ## 5. Cortex code — PostgresConversationStore
 
-- [ ] 5.1 Add `rbrain-cortex/app/chat/db.py` exposing `create_pool(database_url: str) -> asyncpg.Pool` + a `ping(pool) -> None` that runs `SELECT 1` for boot validation
-- [ ] 5.2 Refactor `rbrain-cortex/app/chat/store.py`: extract an abstract `ConversationStore` interface (5 methods: `new_conversation`, `exists`, `append`, `extend`, `fetch`) that both `InMemoryConversationStore` (existing, unchanged behavior) and the new `PostgresConversationStore` implement
-- [ ] 5.3 Implement `PostgresConversationStore` in `app/chat/store.py` (or split into `app/chat/postgres_store.py`):
+- [x] 5.1 Add `rbrain-cortex/app/chat/db.py` exposing `create_pool(database_url: str) -> asyncpg.Pool` + a `ping(pool) -> None` that runs `SELECT 1` for boot validation
+- [x] 5.2 Refactor `rbrain-cortex/app/chat/store.py`: extract an abstract `ConversationStore` interface (5 methods: `new_conversation`, `exists`, `append`, `extend`, `fetch`) that both `InMemoryConversationStore` (existing, unchanged behavior) and the new `PostgresConversationStore` implement
+- [x] 5.3 Implement `PostgresConversationStore` in `app/chat/store.py` (or split into `app/chat/postgres_store.py`):
   - `new_conversation`: INSERT into cortex.conversations with a fresh UUID4, return the id
   - `exists`: SELECT 1 FROM cortex.conversations WHERE id = $1
   - `append`: UPDATE cortex.conversations SET messages = messages || jsonb_build_array($2::jsonb), updated_at = now() WHERE id = $1 — atomically appends one message
   - `extend`: same as append but the jsonb cast is `jsonb` of the array of new messages
   - `fetch`: SELECT messages FROM cortex.conversations WHERE id = $1; parse JSONB into `list[Message]`
-- [ ] 5.4 Update `rbrain-cortex/app/main.py`:
+- [x] 5.4 Update `rbrain-cortex/app/main.py`:
   - Read `DATABASE_URL` from env; missing or unparseable → exit 78 (EX_CONFIG)
   - Create asyncpg pool; `ping()` it
   - Run Alembic `upgrade head` programmatically (or document the manual step if programmatic invocation is fragile)
@@ -44,24 +44,24 @@
 
 ## 6. Cortex code — local dev fixture
 
-- [ ] 6.1 Add `rbrain-cortex/docker-compose.yaml` with one `postgres:16` service on host port `5433` (distinct from lexicon's `5432`); volume mount under `./.data/postgres-cortex`; database `cortex`, role `cortex` (POSTGRES_USER/PASSWORD), password from env or hardcoded for dev
-- [ ] 6.2 Add a `.env.example` line for `DATABASE_URL=postgresql://cortex:cortex@localhost:5433/cortex`
+- [x] 6.1 Add `rbrain-cortex/docker-compose.yaml` with one `postgres:16` service on host port `5433` (distinct from lexicon's `5432`); volume mount under `./.data/postgres-cortex`; database `cortex`, role `cortex` (POSTGRES_USER/PASSWORD), password from env or hardcoded for dev
+- [x] 6.2 Add a `.env.example` line for `DATABASE_URL=postgresql://cortex:cortex@localhost:5433/cortex`
 
 ## 7. Cortex tests
 
-- [ ] 7.1 Update `tests/test_chat_endpoint.py` and `tests/test_agent_loop.py` to inject the `InMemoryConversationStore` via the abstract interface (or keep the existing wiring — likely no change needed since tests already use `InMemoryConversationStore` directly)
-- [ ] 7.2 Add `tests/test_postgres_store.py` integration tests:
+- [x] 7.1 Update `tests/test_chat_endpoint.py` and `tests/test_agent_loop.py` to inject the `InMemoryConversationStore` via the abstract interface (or keep the existing wiring — likely no change needed since tests already use `InMemoryConversationStore` directly)
+- [x] 7.2 Add `tests/test_postgres_store.py` integration tests:
   - Skip the file if `DATABASE_URL` is not set in the test env, or use testcontainers (`testcontainers[postgresql]`) to spin up an ephemeral PG for the test session
   - Cover: new_conversation returns a fresh UUID; append + fetch round-trip preserves message order; extend appends multiple at once; exists returns true after new_conversation; restart-resilience asserted by closing the pool and reopening
-- [ ] 7.3 Add `tests/test_boot.py` cases:
+- [x] 7.3 Add `tests/test_boot.py` cases:
   - Missing `DATABASE_URL` exits 78
   - `DATABASE_URL` with bad scheme exits 78
-- [ ] 7.4 `uv run ruff check . && uv run ruff format --check . && uv run mypy app && uv run pytest -x` all green
+- [x] 7.4 `uv run ruff check . && uv run ruff format --check . && uv run mypy app && uv run pytest -x` all green
 
 ## 8. Cortex CI
 
-- [ ] 8.1 Update `rbrain-cortex/.github/workflows/ci.yml` to start a Postgres service block (PG 16 image, expose 5432 in the runner; matches lexicon's pattern minus NATS); set `DATABASE_URL` env for the pytest step
-- [ ] 8.2 Push the cortex commit(s); verify cortex CI workflow goes green
+- [x] 8.1 Update `rbrain-cortex/.github/workflows/ci.yml` to start a Postgres service block (PG 16 image, expose 5432 in the runner; matches lexicon's pattern minus NATS); set `DATABASE_URL` env for the pytest step
+- [x] 8.2 Push the cortex commit(s); verify cortex CI workflow goes green
 
 ## 9. cortex-bootstrap MODIFIED follow-up (in rbrain-cortex)
 
