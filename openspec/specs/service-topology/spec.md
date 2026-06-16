@@ -69,3 +69,43 @@ The synchronous call graph defined in `sync-graph.yaml` SHALL be a directed acyc
 - **WHEN** an OpenSpec change proposes adding an edge that would create a cycle (e.g., `lexicon → cortex`, given the existing `cortex → lexicon`)
 - **THEN** validation tooling SHALL detect the cycle and reject the change
 
+### Requirement: Canonical local-development port map
+
+The platform SHALL maintain a single canonical map of the host ports each context uses in **local development**, where all contexts run on one machine and the production `PORT`-defaults-to-`8080` rule (see `repository-conventions` → "Port binding honors a PORT environment variable") would otherwise collide. This map is a local collision-avoidance convention and SHALL NOT change the production bind default.
+
+The canonical map is:
+
+| context | HTTP | NATS | Postgres |
+|---|---|---|---|
+| lexicon | 8080 | 4222 | 5432 |
+| cortex | 8081 | — (uses identity's NATS, 4224) | 5433 |
+| oracle | 8082 | 4223 | 5434 |
+| identity | 8083 | 4224 | 5435 |
+| chronicle | 8084 | — (reserved) | 5436 |
+| forge | 8085 | 4225 | 5437 |
+| gateway | 8090 | — | — |
+| app (frontend) | 3000 | — | — |
+
+Rules:
+
+- Each context's `.env.example` SHALL reflect these ports: its own HTTP port (via `PORT` or the equivalent runtime flag) and the host ports of every service and datastore it connects to.
+- The gateway SHALL bind `8090` and SHALL address downstream services at their HTTP ports above (`identity:8083`, `cortex:8081`, `lexicon:8080`, `oracle:8082`).
+- cortex SHALL connect to NATS at `4224` (identity's instance, where the `IDENTITY_EVENTS` stream lives); it does not run its own NATS.
+- chronicle (`8084`) and forge (`8085`) ports are reserved for when those services come online; forge's NATS port (`4225`) is reserved for its `rbrain.forge.*` producer role.
+- New contexts SHALL claim the next free HTTP port in the `808x` block (and Postgres in the `543x` block, NATS in the `422x` block if they publish events) via an OpenSpec change updating this table.
+
+#### Scenario: Gateway example points at real downstream ports
+
+- **WHEN** a developer copies `rbrain-gateway/.env.example` to `.env` and starts the stack per the recipes
+- **THEN** `IDENTITY_URL`, `CORTEX_URL`, `LEXICON_URL`, and `ORACLE_URL` SHALL resolve to `8083`, `8081`, `8080`, and `8082` respectively, and the gateway SHALL bind `8090`; every downstream call SHALL reach a running service
+
+#### Scenario: A service example lists every port it needs
+
+- **WHEN** a context's `.env.example` is reviewed
+- **THEN** it SHALL state the context's own HTTP port and the host ports of each datastore and service it depends on, all matching this table (e.g. cortex lists its `NATS_URL` at `4224`, its `DATABASE_URL` at `5433`, and `LEXICON_URL`/`ORACLE_URL` at `8080`/`8082`)
+
+#### Scenario: A new context claims a port via the table
+
+- **WHEN** a new `rbrain-*` context is introduced that binds an HTTP port
+- **THEN** the change introducing it SHALL add a row to this table claiming the next free `808x` HTTP port (and `543x`/`422x` ports as needed), rather than picking an undocumented number
+
