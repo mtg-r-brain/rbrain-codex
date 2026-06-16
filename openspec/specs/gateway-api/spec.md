@@ -5,9 +5,11 @@ TBD - created by archiving change gateway-api. Update Purpose after archive.
 ## Requirements
 ### Requirement: rbrain-gateway proxies the identity auth routes unauthenticated
 
-`rbrain-gateway` SHALL expose `POST /auth/register` and `POST /auth/login` as **unauthenticated** reverse proxies to `rbrain-identity`. The request body, request headers (except `Host` and `Authorization`), HTTP method, and response body/status/headers SHALL pass through unchanged.
+`rbrain-gateway` SHALL expose `POST /auth/register`, `POST /auth/login`, `GET /auth/oauth/google/authorize`, and `GET /auth/oauth/google/callback` as **unauthenticated** reverse proxies to `rbrain-identity`. The request body, request headers (except `Host` and `Authorization`), HTTP method, and response body/status/headers SHALL pass through unchanged.
 
-These two routes SHALL NOT require an Authorization header. Any Authorization header on these routes SHALL be stripped before forwarding.
+These routes SHALL NOT require an Authorization header. Any Authorization header on these routes SHALL be stripped before forwarding.
+
+Because the OAuth routes make `rbrain-identity` reply with redirects and cookies, the gateway SHALL **relay and not follow** upstream `3xx` responses: the response status, the `Location` header, and any `Set-Cookie` header(s) SHALL be re-emitted to the client verbatim, and the gateway SHALL NOT itself follow the `Location`. (The state cookie thus round-trips between the browser and identity through the gateway.)
 
 #### Scenario: register flows through gateway to identity
 
@@ -23,6 +25,16 @@ These two routes SHALL NOT require an Authorization header. Any Authorization he
 
 - **WHEN** a client posts `POST /auth/login` with `Authorization: Bearer <something>`
 - **THEN** gateway SHALL strip the Authorization header before forwarding; identity SHALL NOT see it
+
+#### Scenario: OAuth authorize redirect is relayed, not followed
+
+- **WHEN** a browser requests `GET /auth/oauth/google/authorize` and identity replies `302` with a `Location` to Google and a `Set-Cookie` for the state cookie
+- **THEN** gateway SHALL re-emit `302` with the same `Location` and `Set-Cookie` to the browser; gateway SHALL NOT follow the `Location` itself
+
+#### Scenario: OAuth callback redirect to the frontend is relayed
+
+- **WHEN** a browser requests `GET /auth/oauth/google/callback?code=…&state=…` and identity replies `302` with a `Location` to `${FRONTEND_URL}/auth/callback#token=…`
+- **THEN** gateway SHALL re-emit the `302` and `Location` verbatim so the browser navigates to the frontend with the fragment intact
 
 ### Requirement: rbrain-gateway gates protected routes behind a Bearer JWT
 
@@ -75,7 +87,7 @@ Downstream services MAY consume the header but SHALL NOT trust it without indepe
 
 ### Requirement: No other public HTTP routes at v1
 
-`rbrain-gateway` SHALL expose exactly seven **public** HTTP routes at v1: `GET /health` (defined by `repository-conventions`), `POST /auth/register` and `POST /auth/login` (defined here), `POST /chat`, `GET /cards/{scryfall_id}`, `GET /cards`, and `GET /rules/{number}` (defined here). Any additional public route — `POST /auth/refresh`, `POST /chat/streaming`, `GET /me`, OAuth2 callbacks, password-reset routes — requires a MODIFIED delta on `gateway-api` before the route ships.
+`rbrain-gateway` SHALL expose exactly nine **public** HTTP routes at v1: `GET /health` (defined by `repository-conventions`), `POST /auth/register`, `POST /auth/login`, `GET /auth/oauth/google/authorize`, and `GET /auth/oauth/google/callback` (the identity auth proxies), `POST /chat`, `GET /cards/{scryfall_id}`, `GET /cards`, and `GET /rules/{number}`. Any additional public route — `POST /auth/refresh`, `POST /chat/streaming`, `GET /me`, further OAuth provider routes (e.g. Discord), password-reset routes — requires a MODIFIED delta on `gateway-api` before the route ships.
 
 At v1, `rbrain-gateway` SHALL NOT expose any `/admin/*` route. Should one surface later (config reload, force-logout broadcast), an `/admin/*` carve-out comparable to `lexicon-api-admin-carveout` SHALL be introduced via its own OpenSpec change. Gateway SHALL reject any inbound external request whose path begins with `/admin/` regardless of underlying configuration — the `/admin/*` prefix is reserved across the platform per the `lexicon-api-admin-carveout` precedent.
 
@@ -134,3 +146,4 @@ The CORS layer SHALL apply uniformly to all public routes — there is no per-ro
 
 - **WHEN** an allowlisted browser sends `OPTIONS /chat` without an `Authorization` header
 - **THEN** the gateway SHALL respond `200 OK` (or `204`) with CORS headers; it SHALL NOT respond `401 {"error":"invalid token"}` — preflight is not an auth event
+
