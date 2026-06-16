@@ -21,6 +21,10 @@ edges:
     callee: chronicle
     purpose: Blog content reads (public) and edits (authenticated).
 
+  - caller: gateway
+    callee: forge
+    purpose: User-scoped deck CRUD (deck storage and retrieval); forge is dual-role (also a cortex tool).
+
   - caller: cortex
     callee: lexicon
     purpose: Card lookups used as agent tools (oracle text retrieval, search).
