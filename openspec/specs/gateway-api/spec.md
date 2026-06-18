@@ -87,7 +87,7 @@ Downstream services MAY consume the header but SHALL NOT trust it without indepe
 
 ### Requirement: No other public HTTP routes at v1
 
-`rbrain-gateway` SHALL expose exactly sixteen **public** HTTP routes at v1: `GET /health` (defined by `repository-conventions`), `POST /auth/register`, `POST /auth/login`, `GET /auth/oauth/google/authorize`, `GET /auth/oauth/google/callback`, `GET /auth/oauth/discord/authorize`, and `GET /auth/oauth/discord/callback` (the identity auth proxies), `POST /chat`, `GET /cards/{scryfall_id}`, `GET /cards`, `GET /rules/{number}`, `POST /decks`, `GET /decks`, `GET /decks/{id}`, `PUT /decks/{id}`, and `DELETE /decks/{id}` (the forge deck routes). Any additional public route — `POST /auth/refresh`, `POST /chat/streaming`, `GET /me`, further OAuth provider routes, password-reset routes — requires a MODIFIED delta on `gateway-api` before the route ships.
+`rbrain-gateway` SHALL expose exactly eighteen **public** HTTP routes at v1: `GET /health` (defined by `repository-conventions`), `POST /auth/register`, `POST /auth/login`, `GET /auth/oauth/google/authorize`, `GET /auth/oauth/google/callback`, `GET /auth/oauth/discord/authorize`, and `GET /auth/oauth/discord/callback` (the identity auth proxies), `POST /chat`, `GET /cards/{scryfall_id}`, `GET /cards`, `GET /rules/{number}`, `POST /decks`, `GET /decks`, `GET /decks/{id}`, `PUT /decks/{id}`, `DELETE /decks/{id}` (the forge deck routes), `GET /articles`, and `GET /articles/{slug}` (the chronicle blog reads). Any additional public route — `POST /auth/refresh`, `POST /chat/streaming`, `GET /me`, further OAuth provider routes, password-reset routes — requires a MODIFIED delta on `gateway-api` before the route ships.
 
 At v1, `rbrain-gateway` SHALL NOT expose any `/admin/*` route. Should one surface later (config reload, force-logout broadcast), an `/admin/*` carve-out comparable to `lexicon-api-admin-carveout` SHALL be introduced via its own OpenSpec change. Gateway SHALL reject any inbound external request whose path begins with `/admin/` regardless of underlying configuration — the `/admin/*` prefix is reserved across the platform per the `lexicon-api-admin-carveout` precedent.
 
@@ -108,7 +108,7 @@ At v1, `rbrain-gateway` SHALL NOT expose any `/admin/*` route. Should one surfac
 
 ### Requirement: CORS preflight discipline
 
-`rbrain-gateway` SHALL accept browser CORS preflight `OPTIONS` requests on every public HTTP route declared in this capability (`POST /auth/register`, `POST /auth/login`, `POST /chat`, `GET /cards`, `GET /cards/{scryfall_id}`, `GET /rules/{number}`, `POST /decks`, `GET /decks`, `GET /decks/{id}`, `PUT /decks/{id}`, `DELETE /decks/{id}`) and on the platform-wide `GET /health`.
+`rbrain-gateway` SHALL accept browser CORS preflight `OPTIONS` requests on every public HTTP route declared in this capability (`POST /auth/register`, `POST /auth/login`, `POST /chat`, `GET /cards`, `GET /cards/{scryfall_id}`, `GET /rules/{number}`, `POST /decks`, `GET /decks`, `GET /decks/{id}`, `PUT /decks/{id}`, `DELETE /decks/{id}`, `GET /articles`, `GET /articles/{slug}`) and on the platform-wide `GET /health`.
 
 The CORS behavior is gated by a deployment-configured allowlist of permitted browser origins. The codex contract does NOT name the env var or config key; the gateway implementation slice (`gateway-cors-policy` in `rbrain-gateway`) does.
 
@@ -125,7 +125,7 @@ When the deployment-configured allowlist is empty (the default, no opt-in), the 
 
 The CORS layer SHALL short-circuit `OPTIONS` requests before they reach the Bearer-JWT middleware: preflight is not an auth event. Subsequent non-preflight requests on the protected group continue to go through `jwt_middleware` as specified by the existing Requirement "rbrain-gateway gates protected routes behind a Bearer JWT".
 
-The CORS layer SHALL apply uniformly to all public routes — there is no per-route allowlist; a single deployment-level list covers `/auth/*`, `/health`, `/chat`, `/cards`, `/cards/*`, `/rules/*`, and `/decks/*`.
+The CORS layer SHALL apply uniformly to all public routes — there is no per-route allowlist; a single deployment-level list covers `/auth/*`, `/health`, `/chat`, `/cards`, `/cards/*`, `/rules/*`, `/decks/*`, and `/articles/*`.
 
 #### Scenario: Allowlisted origin preflight on /auth/register
 
@@ -136,6 +136,11 @@ The CORS layer SHALL apply uniformly to all public routes — there is no per-ro
 
 - **WHEN** an allowlisted browser sends `OPTIONS /decks/{id}` with `Access-Control-Request-Method: PUT` (or `DELETE`)
 - **THEN** the gateway SHALL respond `200 OK` (or `204`) with `Access-Control-Allow-Origin` set to the request origin and `Access-Control-Allow-Methods` containing the requested method and `OPTIONS`; the preflight SHALL NOT invoke the Bearer-JWT middleware
+
+#### Scenario: Preflight on a public blog read is accepted
+
+- **WHEN** an allowlisted browser sends `OPTIONS /articles` with `Access-Control-Request-Method: GET`
+- **THEN** the gateway SHALL respond `200 OK` (or `204`) with `Access-Control-Allow-Origin` set to the request origin and `Access-Control-Allow-Methods` containing `GET` and `OPTIONS`
 
 #### Scenario: Non-allowlisted origin gets no CORS headers
 
@@ -151,4 +156,25 @@ The CORS layer SHALL apply uniformly to all public routes — there is no per-ro
 
 - **WHEN** an allowlisted browser sends `OPTIONS /chat` without an `Authorization` header
 - **THEN** the gateway SHALL respond `200 OK` (or `204`) with CORS headers; it SHALL NOT respond `401 {"error":"invalid token"}` — preflight is not an auth event
+
+### Requirement: rbrain-gateway proxies chronicle blog reads unauthenticated
+
+`rbrain-gateway` SHALL expose `GET /articles` and `GET /articles/{slug}` as **unauthenticated** reverse proxies to `rbrain-chronicle`. Blog reads are public: no `Authorization` header is required and none is consumed. The request query string, request headers (except `Host` and `Authorization`), HTTP method, and response body/status/headers SHALL pass through unchanged.
+
+These routes SHALL NOT carry an injected `X-User-Id`; any client-supplied `X-User-Id` SHALL be stripped before forwarding, as on every proxied route. Editorial authoring is operator-internal under chronicle's `/admin/*` prefix and is NOT proxied by the gateway — `rbrain-gateway` SHALL reject any external request whose path begins with `/admin/` per the existing closure requirement.
+
+#### Scenario: Public article list is proxied unauthenticated
+
+- **WHEN** a client sends `GET /articles?limit=10` with no Authorization header
+- **THEN** gateway SHALL forward to `${CHRONICLE_URL}/articles?limit=10` and re-emit chronicle's response unchanged; gateway SHALL NOT respond `401`
+
+#### Scenario: Public single article is proxied unauthenticated
+
+- **WHEN** a client sends `GET /articles/my-first-post`
+- **THEN** gateway SHALL forward to `${CHRONICLE_URL}/articles/my-first-post` and re-emit chronicle's response (including a `404` when chronicle returns one)
+
+#### Scenario: Chronicle admin routes are not proxied
+
+- **WHEN** a client sends `POST /admin/articles` to the gateway
+- **THEN** gateway SHALL respond `404 Not Found` per the `/admin/*` closure rule; no proxy to chronicle SHALL be attempted
 

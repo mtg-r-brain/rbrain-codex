@@ -19,7 +19,7 @@ edges:
 
   - caller: gateway
     callee: chronicle
-    purpose: Blog content reads (public) and edits (authenticated).
+    purpose: Public blog content reads only; editorial authoring is operator-internal under chronicle's /admin/* prefix and is not gateway-proxied.
 
   - caller: gateway
     callee: forge
