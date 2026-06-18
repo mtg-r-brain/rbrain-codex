@@ -85,7 +85,7 @@ This convention applies to public-facing siblings only. `deploy` and `codex` hav
 
 - All written artifacts (specs, ADRs, commits, PRs, GitHub issues) are in **English**.
 - Commit messages follow [Gitmoji](https://gitmoji.dev/) per the team convention.
-- One commit per OpenSpec artifact during the planning phase; one commit per task group during the apply phase.
+- One `📝 spec` commit per change during the planning phase — covering proposal, design, spec deltas, and tasks together; the **change** is the atomic unit, not each artifact — followed by one `📦 archive` commit at archive time. During the apply phase, one commit per task group.
 
 ### Reference templates
 
