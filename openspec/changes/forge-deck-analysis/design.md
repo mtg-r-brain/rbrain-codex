@@ -1,0 +1,7 @@
+# forge-deck-analysis — Design
+
+- **Facts-supplied analysis** (caller provides `card_facts`): honors both the catalog (forge owns deck analysis) and the topology (no `forge → lexicon` edge — rejected in the June audit and again here: a data edge for one feature would make forge transitively depend on the card catalogue's availability). Cortex already holds a lexicon client and the agent loop; it is the natural fact-fetcher. Rejected alternatives: forge→lexicon edge (topology change, coupling); cortex computes the analysis itself (strands forge's catalog mandate and buries domain math in the orchestrator).
+- **Stateless, in-cluster, like `/decks/parse`**: no `X-User-Id`, no gateway exposure. A UI "analyze my saved deck" flow later composes existing pieces (app → gateway `GET /decks/{id}` → chat or a future public analyze proxy) without changing this contract.
+- **Cost-symbol color approximation**: true color identity needs faces, color indicators, and rules text — lexicon's public payload exposes `mana_cost`/`type_line` only. The approximation is stated in the contract so nobody mistakes it for identity. Improving it later means enriching lexicon-api first.
+- **CMC conventions**: `{X}` = 0 (Comprehensive Rules 203.3b at rest), hybrid/phyrexian = 1 per symbol — standard conventions, encoded as scenarios-by-example in forge's own tests.
+- **`unresolved` over failure**: a stale catalogue or a typo'd card must not kill the analysis; the agent can surface unresolved names conversationally.
