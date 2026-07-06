@@ -35,8 +35,8 @@ fi
 failures=0
 for spec in "${api_specs[@]}"; do
   capability="$(basename "$(dirname "$spec")")"
-  if grep -qE 'SHALL expose exactly (one|two|three|four|five|six|seven|eight|nine|ten) (\*\*)?public(\*\*)? HTTP routes' "$spec" \
-     || grep -qE 'SHALL expose exactly (one|two|three|four|five|six|seven|eight|nine|ten) HTTP routes' "$spec"; then
+  if grep -qE 'SHALL expose exactly [a-z]+(-[a-z]+)? (\*\*)?public(\*\*)? HTTP routes' "$spec" \
+     || grep -qE 'SHALL expose exactly [a-z]+(-[a-z]+)? HTTP routes' "$spec"; then
     printf 'validate-api-closure: OK — %s declares its closure clause\n' "$capability"
   else
     printf 'validate-api-closure: FAIL — %s is missing a route-closure clause\n' "$capability" >&2
