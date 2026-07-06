@@ -6,10 +6,10 @@
 # Modifying any value requires an OpenSpec change.
 
 # Per-bounded-context budgets (MB of RSS).
-# Sum of service budgets: 485 MB.
+# Sum of service budgets: 556 MB.
 budgets:
   gateway: 35
-  identity: 25
+  identity: 96
   lexicon: 30
   oracle: 40
   forge: 30
@@ -27,5 +27,5 @@ external:
   nats: 40
 
 # Platform-wide ceiling for a single-node deployment (MB of RSS).
-# Current sum: 831 MB (485 services + 346 external). Headroom: 193 MB.
+# Current sum: 902 MB (556 services + 346 external). Headroom: 122 MB.
 ceiling: 1024
