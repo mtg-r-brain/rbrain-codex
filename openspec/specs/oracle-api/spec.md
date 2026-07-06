@@ -120,10 +120,12 @@ The `200 OK` response SHALL be `Content-Type: application/json` with exactly thr
 
 Query embeddings SHALL be computed **in-process** (no network call to any embedding provider); the model, its dimensionality, and the pgvector storage/indexing details are `rbrain-oracle` sibling-spec concerns, not part of this cross-context contract. An empty result set (`results: []`) is a valid `200` — never a `404`.
 
-#### Scenario: Natural-language query retrieves the relevant rule
+The retriever is tuned for keyword-anchored queries; reformulating conversational questions into that shape is the calling agent's responsibility (cortex's `search_rules` tool), validated end-to-end through the chat loop.
 
-- **WHEN** `GET /rules/search?q=why is my spell countered unless I pay mana` runs against the synced corpus
-- **THEN** the response SHALL be `200` and `results` SHALL contain the Ward rule (`702.21a`) among the top entries, each entry carrying `number`, `text`, and a descending `score`
+#### Scenario: Keyword-anchored query retrieves the relevant rule
+
+- **WHEN** `GET /rules/search?q=ward keyword pay mana or countered` runs against the synced corpus
+- **THEN** the response SHALL be `200` and `results` SHALL rank the Ward rule (`702.21a`) first, each entry carrying `number`, `text`, and a descending `score`
 
 #### Scenario: Missing query is rejected
 
