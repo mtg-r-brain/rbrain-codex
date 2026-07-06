@@ -65,7 +65,7 @@ Each `rbrain-*` repo's `OWNERSHIP.yaml` SHALL declare an integer `max_rss_mb` fi
 | Context | `max_rss_mb` |
 |---|---|
 | `gateway` | 35 |
-| `identity` | 25 |
+| `identity` | 96 |
 | `lexicon` | 30 |
 | `oracle` | 40 |
 | `forge` | 30 |
@@ -74,6 +74,8 @@ Each `rbrain-*` repo's `OWNERSHIP.yaml` SHALL declare an integer `max_rss_mb` fi
 | `app` | 100 |
 | `deploy` | 0 |
 | `codex` | 0 |
+
+`identity`'s budget is dominated by a transient allocation, not steady state: the committed Argon2id parameters (`m=65536` per `identity-bootstrap-mvp`) allocate 64 MiB per in-flight password hash by design. Steady-state RSS is ~4 MB.
 
 Raising or lowering any budget SHALL go through an OpenSpec change.
 
@@ -87,9 +89,14 @@ Raising or lowering any budget SHALL go through an OpenSpec change.
 - **WHEN** a sibling repo's CI runs a load test on the service and observes RSS exceeding the declared `max_rss_mb`
 - **THEN** the CI job SHALL fail; the resolution is either to optimize the service or to file an OpenSpec change amending this table
 
+#### Scenario: Budget accounts for spec-mandated transients
+
+- **WHEN** a capability spec mandates an algorithm with an explicit memory cost (e.g. Argon2id `m=65536`)
+- **THEN** the owning context's budget SHALL cover that transient working set; a budget that makes a committed requirement unexecutable SHALL be treated as a defect in this table, not in the sibling
+
 ### Requirement: Platform-wide memory ceiling
 
-The sum of all per-context `max_rss_mb` values plus the external dependency budgets (PostgreSQL: 256 MB, Redis: 50 MB, NATS: 40 MB) SHALL NOT exceed 1024 MB for a single-node deployment. The current sum is 831 MB, leaving 193 MB of headroom.
+The sum of all per-context `max_rss_mb` values plus the external dependency budgets (PostgreSQL: 256 MB, Redis: 50 MB, NATS: 40 MB) SHALL NOT exceed 1024 MB for a single-node deployment. The current sum is 902 MB, leaving 122 MB of headroom.
 
 #### Scenario: Sum check on budget change
 
