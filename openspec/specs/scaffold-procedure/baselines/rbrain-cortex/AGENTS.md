@@ -38,7 +38,7 @@ Orchestrates LLM agents, conversations, and tool invocations across lexicon, ora
 
 ## Runtime
 
-This repo runs on `python` `>= 3.12` with a memory budget of `200` MB. CI enforces both via `validate-repo.sh` fetched from `rbrain-codex` `main`.
+This repo runs on `python` `>= 3.12` with a memory budget of `176` MB. CI enforces both via `validate-repo.sh` fetched from `rbrain-codex` `main`.
 
 ## Working in this repo
 
@@ -63,7 +63,7 @@ uv run pytest
 
 ### Memory ceiling
 
-Every PR that ships behavioral change SHOULD verify RSS stays under `200` MB under representative load. The ceiling is enforced by `validate-repo.sh` (declared value vs. budgets.yaml); deviations need an OpenSpec change against `language-runtimes`.
+Every PR that ships behavioral change SHOULD verify RSS stays under `176` MB under representative load. The ceiling is enforced by `validate-repo.sh` (declared value vs. budgets.yaml); deviations need an OpenSpec change against `language-runtimes`.
 
 ### Conventions
 

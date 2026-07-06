@@ -34,7 +34,7 @@ Answers Magic: The Gathering rules questions by retrieving and reasoning over th
 
 ## Runtime
 
-This repo runs on `rust` `>= 1.83.0` with a memory budget of `40` MB. CI enforces both via `validate-repo.sh` fetched from `rbrain-codex` `main`.
+This repo runs on `rust` `>= 1.83.0` with a memory budget of `160` MB. CI enforces both via `validate-repo.sh` fetched from `rbrain-codex` `main`.
 
 ## Working in this repo
 
@@ -56,7 +56,7 @@ cargo fmt --check
 
 ### Memory ceiling
 
-Every PR that ships behavioral change SHOULD run a representative load and verify RSS stays under `40` MB. Exceeding the budget is a contract violation; either optimize the service or file an OpenSpec change against `language-runtimes`.
+Every PR that ships behavioral change SHOULD run a representative load and verify RSS stays under `160` MB. Exceeding the budget is a contract violation; either optimize the service or file an OpenSpec change against `language-runtimes`.
 
 ### Conventions
 

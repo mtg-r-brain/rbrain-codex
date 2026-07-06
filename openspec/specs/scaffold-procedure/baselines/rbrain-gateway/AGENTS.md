@@ -28,6 +28,7 @@ Routes external HTTP traffic to backend contexts, enforces authentication, and a
 - identity
 - cortex
 - chronicle
+- forge
 
 ## Published events (NATS)
 

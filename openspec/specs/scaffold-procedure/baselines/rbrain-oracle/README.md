@@ -7,7 +7,7 @@ Part of the [MTG R.brain](https://github.com/mtg-r-brain) platform. The contract
 ## Stack
 
 - **Runtime**: rust (>= 1.83)
-- **Memory budget**: 40 MB
+- **Memory budget**: 160 MB
 - **Framework**: Axum 0.7 + Tokio 1.40
 - **Persistence**: see `openspec/specs/data-stores/spec.md` in `rbrain-codex`
 

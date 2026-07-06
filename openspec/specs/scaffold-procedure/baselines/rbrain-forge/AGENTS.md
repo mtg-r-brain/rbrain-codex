@@ -23,6 +23,7 @@ Parses, stores, and analyzes Magic decks across all supported formats.
 
 ## Synchronous callers
 
+- gateway
 - cortex
 
 ## Synchronous callees

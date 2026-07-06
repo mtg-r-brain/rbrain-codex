@@ -1,6 +1,6 @@
 context: cortex
 owner: hoani.cross@gmail.com
 runtime: python
-max_rss_mb: 200
+max_rss_mb: 176
 depends_on: [lexicon, oracle, forge]
 publishes: []

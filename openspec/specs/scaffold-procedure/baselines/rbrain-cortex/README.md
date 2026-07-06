@@ -7,7 +7,7 @@ Part of the [MTG R.brain](https://github.com/mtg-r-brain) platform. The contract
 ## Stack
 
 - **Runtime**: python (>= 3.12)
-- **Memory budget**: 200 MB
+- **Memory budget**: 176 MB
 - **Framework**: FastAPI >= 0.115 + Uvicorn
 - **Package manager**: [`uv`](https://github.com/astral-sh/uv)
 
