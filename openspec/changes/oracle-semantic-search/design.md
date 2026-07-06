@@ -1,0 +1,8 @@
+# oracle-semantic-search — Design
+
+- **In-process embeddings** (user-validated fork, 2026-07-06): Ollama Cloud's catalogue ships no embedding model (34 models checked); an external embeddings vendor (OpenAI) adds a per-query network hop, a new key, and a sovereignty concession; a local ollama container adds 300-500 MB against a 1024 MB ceiling. Spike-measured in-process inference (fastembed-rs, quantized MiniLM-L6-v2, 384 dims): ~102 MiB serving steady state, ~115 MiB sync-time peak at batch 8, 3 ms per query, full 3430-rule corpus indexed in ~41 s. Budgets rebalanced by the sibling change `embedding-memory-rebalance` (oracle 160, cortex 176, sum 998/1024).
+- **Model identity stays out of this contract**: the codex surface commits to behavior (in-process, `[0,1]` score, ranked results), not to a model. Swapping models is an oracle sibling change plus a re-index — no cross-context ripple.
+- **Score in `[0,1]`**: pgvector's cosine distance (`<=>`) maps as `score = 1 - distance/2`... implementation detail; the contract only fixes range and ordering so consumers (cortex tool, future UI) can threshold portably.
+- **`GET /rules/search` vs `GET /rules/{number}` collision**: made an explicit scenario — axum route precedence must serve `/rules/search` from the search handler, never as `number = "search"`.
+- **Gateway impact is enumerative only**: the protected proxy already forwards `/rules/*rest`; the closure and CORS lists gain the route so the count stays honest (the 06-18 audit's Finding C showed what silent route drift costs).
+- **Empty results are 200, not 404**: search is a ranking, not a lookup; "nothing relevant" is a valid answer the agent must be able to see.
