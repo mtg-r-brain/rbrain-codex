@@ -38,7 +38,7 @@ Because the OAuth routes make `rbrain-identity` reply with redirects and cookies
 
 ### Requirement: rbrain-gateway gates protected routes behind a Bearer JWT
 
-`rbrain-gateway` SHALL expose `POST /chat`, `GET /cards/{scryfall_id}`, `GET /cards`, `GET /rules/{number}`, `POST /decks`, `GET /decks`, `GET /decks/{id}`, `PUT /decks/{id}`, and `DELETE /decks/{id}` as **JWT-protected** reverse proxies — to cortex, lexicon, oracle, and forge respectively. Every protected request SHALL carry a valid `Authorization: Bearer <jwt>` header.
+`rbrain-gateway` SHALL expose `POST /chat`, `GET /cards/{scryfall_id}`, `GET /cards`, `GET /rules/{number}`, `GET /rules/search`, `POST /decks`, `GET /decks`, `GET /decks/{id}`, `PUT /decks/{id}`, and `DELETE /decks/{id}` as **JWT-protected** reverse proxies — to cortex, lexicon, oracle, and forge respectively. Every protected request SHALL carry a valid `Authorization: Bearer <jwt>` header.
 
 Missing Authorization header, malformed Bearer scheme, signature mismatch, expired token, or HS256-incompatible algorithm SHALL all produce `401 Unauthorized` with body `{"error": "invalid token"}`. The wire response SHALL NOT distinguish among these failure modes — identical body on every 401 path.
 
@@ -59,15 +59,10 @@ JWT verification SHALL use HS256 with the shared `JWT_SECRET` env var (same secr
 - **WHEN** a client sends `PUT /decks/{id}` or `DELETE /decks/{id}` with a valid Bearer JWT
 - **THEN** gateway SHALL forward to `${FORGE_URL}/decks/{id}` with `X-User-Id: <sub>` injected and re-emit forge's response
 
-#### Scenario: Missing Authorization header returns 401
+#### Scenario: Semantic rules search is proxied to oracle
 
-- **WHEN** a client posts `POST /chat` without an Authorization header
-- **THEN** gateway SHALL return `401 Unauthorized` with `{"error": "invalid token"}`; gateway SHALL NOT forward the request to cortex
-
-#### Scenario: Expired JWT returns 401
-
-- **WHEN** a client posts `GET /cards/<id>` with a JWT whose `exp` is in the past
-- **THEN** gateway SHALL return `401 Unauthorized` with `{"error": "invalid token"}`
+- **WHEN** a client sends `GET /rules/search?q=...` with a valid Bearer JWT
+- **THEN** gateway SHALL forward to `${ORACLE_URL}/rules/search` (query string preserved) with `X-User-Id: <sub>` injected and re-emit oracle's response
 
 ### Requirement: X-User-Id header forwarding
 
@@ -87,7 +82,7 @@ Downstream services MAY consume the header but SHALL NOT trust it without indepe
 
 ### Requirement: No other public HTTP routes at v1
 
-`rbrain-gateway` SHALL expose exactly eighteen **public** HTTP routes at v1: `GET /health` (defined by `repository-conventions`), `POST /auth/register`, `POST /auth/login`, `GET /auth/oauth/google/authorize`, `GET /auth/oauth/google/callback`, `GET /auth/oauth/discord/authorize`, and `GET /auth/oauth/discord/callback` (the identity auth proxies), `POST /chat`, `GET /cards/{scryfall_id}`, `GET /cards`, `GET /rules/{number}`, `POST /decks`, `GET /decks`, `GET /decks/{id}`, `PUT /decks/{id}`, `DELETE /decks/{id}` (the forge deck routes), `GET /articles`, and `GET /articles/{slug}` (the chronicle blog reads). Any additional public route — `POST /auth/refresh`, `POST /chat/streaming`, `GET /me`, further OAuth provider routes, password-reset routes — requires a MODIFIED delta on `gateway-api` before the route ships.
+`rbrain-gateway` SHALL expose exactly nineteen **public** HTTP routes at v1: `GET /health` (defined by `repository-conventions`), `POST /auth/register`, `POST /auth/login`, `GET /auth/oauth/google/authorize`, `GET /auth/oauth/google/callback`, `GET /auth/oauth/discord/authorize`, and `GET /auth/oauth/discord/callback` (the identity auth proxies), `POST /chat`, `GET /cards/{scryfall_id}`, `GET /cards`, `GET /rules/{number}`, `GET /rules/search`, `POST /decks`, `GET /decks`, `GET /decks/{id}`, `PUT /decks/{id}`, `DELETE /decks/{id}` (the forge deck routes), `GET /articles`, and `GET /articles/{slug}` (the chronicle blog reads). Any additional public route — `POST /auth/refresh`, `POST /chat/streaming`, `GET /me`, further OAuth provider routes, password-reset routes — requires a MODIFIED delta on `gateway-api` before the route ships.
 
 At v1, `rbrain-gateway` SHALL NOT expose any `/admin/*` route. Should one surface later (config reload, force-logout broadcast), an `/admin/*` carve-out comparable to `lexicon-api-admin-carveout` SHALL be introduced via its own OpenSpec change. Gateway SHALL reject any inbound external request whose path begins with `/admin/` regardless of underlying configuration — the `/admin/*` prefix is reserved across the platform per the `lexicon-api-admin-carveout` precedent.
 
@@ -108,7 +103,7 @@ At v1, `rbrain-gateway` SHALL NOT expose any `/admin/*` route. Should one surfac
 
 ### Requirement: CORS preflight discipline
 
-`rbrain-gateway` SHALL accept browser CORS preflight `OPTIONS` requests on every public HTTP route declared in this capability (`POST /auth/register`, `POST /auth/login`, `POST /chat`, `GET /cards`, `GET /cards/{scryfall_id}`, `GET /rules/{number}`, `POST /decks`, `GET /decks`, `GET /decks/{id}`, `PUT /decks/{id}`, `DELETE /decks/{id}`, `GET /articles`, `GET /articles/{slug}`) and on the platform-wide `GET /health`.
+`rbrain-gateway` SHALL accept browser CORS preflight `OPTIONS` requests on every public HTTP route declared in this capability (`POST /auth/register`, `POST /auth/login`, `POST /chat`, `GET /cards`, `GET /cards/{scryfall_id}`, `GET /rules/{number}`, `GET /rules/search`, `POST /decks`, `GET /decks`, `GET /decks/{id}`, `PUT /decks/{id}`, `DELETE /decks/{id}`, `GET /articles`, `GET /articles/{slug}`) and on the platform-wide `GET /health`.
 
 The CORS behavior is gated by a deployment-configured allowlist of permitted browser origins. The codex contract does NOT name the env var or config key; the gateway implementation slice (`gateway-cors-policy` in `rbrain-gateway`) does.
 
