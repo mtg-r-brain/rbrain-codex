@@ -103,7 +103,7 @@ Routes under the reserved prefix `/admin/*` are **operator/platform-internal** a
 
 ### Requirement: Semantic rules search endpoint
 
-`rbrain-oracle` SHALL expose `GET /rules/search` on its declared service port, answering natural-language queries over the Comprehensive Rules corpus by semantic similarity.
+`rbrain-oracle` SHALL expose `GET /rules/search` on its declared service port, answering natural-language queries over the Comprehensive Rules corpus by **hybrid retrieval**: semantic similarity fused with lexical full-text matching, so paraphrase and exact-term queries both rank well.
 
 Query parameters:
 
@@ -114,18 +114,23 @@ The `200 OK` response SHALL be `Content-Type: application/json` with exactly thr
 
 | Field     | Type  | Description |
 |-----------|-------|-------------|
-| `results` | array | Up to `limit` entries `{number, text, score}`, ordered by `score` descending. `number` and `text` match the Rule payload of `GET /rules/{number}`; `score` is the semantic similarity in `[0, 1]`. |
+| `results` | array | Up to `limit` entries `{number, text, score}`, ordered by `score` descending. `number` and `text` match the Rule payload of `GET /rules/{number}`; `score` is a relevance score in `[0, 1]` (fused ranking — not a raw cosine value). |
 | `limit`   | integer | Echo of the effective `limit`. |
 | `query`   | string  | Echo of `q`. |
 
-Query embeddings SHALL be computed **in-process** (no network call to any embedding provider); the model, its dimensionality, and the pgvector storage/indexing details are `rbrain-oracle` sibling-spec concerns, not part of this cross-context contract. An empty result set (`results: []`) is a valid `200` — never a `404`.
+Query embeddings SHALL be computed **in-process** (no network call to any embedding provider); the model, its dimensionality, the lexical index, and the fusion algorithm are `rbrain-oracle` sibling-spec concerns, not part of this cross-context contract. An empty result set (`results: []`) is a valid `200` — never a `404`.
 
-The retriever is tuned for keyword-anchored queries; reformulating conversational questions into that shape is the calling agent's responsibility (cortex's `search_rules` tool), validated end-to-end through the chat loop.
+Exact-term queries (verbatim rule phrases, keyword names) are first-class thanks to the lexical channel; reformulating conversational questions into keyword-anchored shape remains available to the calling agent (cortex's `search_rules` tool) as an optimization, not a prerequisite.
 
 #### Scenario: Keyword-anchored query retrieves the relevant rule
 
 - **WHEN** `GET /rules/search?q=ward keyword pay mana or countered` runs against the synced corpus
 - **THEN** the response SHALL be `200` and `results` SHALL rank the Ward rule (`702.21a`) first, each entry carrying `number`, `text`, and a descending `score`
+
+#### Scenario: Verbatim rule phrase anchors lexically
+
+- **WHEN** `GET /rules/search?q=becomes the target of a spell or ability an opponent controls` runs against the synced corpus
+- **THEN** the response SHALL be `200` and `results` SHALL rank rule `702.21a` first — the exact-phrase match anchors even where pure semantic neighbors compete
 
 #### Scenario: Missing query is rejected
 
