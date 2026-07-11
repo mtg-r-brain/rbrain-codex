@@ -97,7 +97,7 @@ The canonical map is:
 | oracle | 8082 | 4223 | 5434 |
 | identity | 8083 | 4224 | 5435 |
 | chronicle | 8084 | — (reserved) | 5436 |
-| forge | 8085 | 4225 | 5437 |
+| forge | 8085 | — (uses lexicon's NATS, 4222) | 5437 |
 | gateway | 8090 | — | — |
 | app (frontend) | 3000 | — | — |
 
@@ -106,7 +106,8 @@ Rules:
 - Each context's `.env.example` SHALL reflect these ports: its own HTTP port (via `PORT` or the equivalent runtime flag) and the host ports of every service and datastore it connects to.
 - The gateway SHALL bind `8090` and SHALL address downstream services at their HTTP ports above (`identity:8083`, `cortex:8081`, `lexicon:8080`, `oracle:8082`).
 - cortex SHALL connect to NATS at `4224` (identity's instance, where the `IDENTITY_EVENTS` stream lives); it does not run its own NATS.
-- chronicle (`8084`) and forge (`8085`) ports are reserved for when those services come online; forge's NATS port (`4225`) is reserved for its `rbrain.forge.*` producer role.
+- forge SHALL connect to NATS at `4222` (lexicon's instance, where the `LEXICON_CARDS` stream lives); it does not run its own NATS and SHALL NOT create or mutate `LEXICON_CARDS`.
+- chronicle (`8084`) port is reserved for when that service comes online.
 - New contexts SHALL claim the next free HTTP port in the `808x` block (and Postgres in the `543x` block, NATS in the `422x` block if they publish events) via an OpenSpec change updating this table.
 
 #### Scenario: Gateway example points at real downstream ports
@@ -123,4 +124,9 @@ Rules:
 
 - **WHEN** a new `rbrain-*` context is introduced that binds an HTTP port
 - **THEN** the change introducing it SHALL add a row to this table claiming the next free `808x` HTTP port (and `543x`/`422x` ports as needed), rather than picking an undocumented number
+
+#### Scenario: Forge connects to lexicon's NATS, not its own
+
+- **WHEN** `rbrain-forge/.env.example` is reviewed
+- **THEN** it SHALL list `NATS_URL` at `4222` (lexicon's instance), matching this table; forge SHALL NOT reserve or bind its own NATS port for this purpose
 
