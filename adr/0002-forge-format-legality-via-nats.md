@@ -79,3 +79,18 @@ slicing):
   dependency on `cortex`+`lexicon` uptime for every deck operation, duplicates
   orchestration logic at every call site, and contradicts `forge`'s stated
   ownership of `format-legality` in the bounded-context catalog.
+
+  **Concrete grounding added 2026-07-11, during slice 2 scoping**: this
+  pattern already exists in `forge` for deck-analysis facts (mana cost, type
+  line) — `POST /decks/analyze` accepts caller-supplied `CardFact`s that
+  `cortex` resolves via its own `cortex → lexicon` edge
+  (`rbrain-forge/src/analysis.rs:1-7`, `handlers.rs:217`). It was tempting to
+  reuse that mechanism for legality too. It does not cover this ADR's actual
+  target, though: `POST /decks` and `PUT /decks/{id}` — where `Deck.format`
+  is validated and persisted — are called directly by `gateway` on the app's
+  behalf, with `cortex` nowhere in that request path. There is no mediator to
+  resolve facts for those routes, so `forge` must be able to validate
+  legality locally and synchronously at persist time regardless. The NATS
+  materialized view remains the only option that covers both the persist
+  path and (once built) the `analyze_deck` path in slice 3, from one source
+  of truth inside `forge`.
