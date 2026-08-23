@@ -87,7 +87,7 @@ Downstream services MAY consume the header but SHALL NOT trust it without indepe
 
 ### Requirement: No other public HTTP routes at v1
 
-`rbrain-gateway` SHALL expose exactly twenty **public** HTTP routes at v1: `GET /health` (defined by `repository-conventions`), `POST /auth/register`, `POST /auth/login`, `GET /auth/oauth/google/authorize`, `GET /auth/oauth/google/callback`, `GET /auth/oauth/discord/authorize`, and `GET /auth/oauth/discord/callback` (the identity auth proxies), `POST /chat`, `GET /cards/{scryfall_id}`, `GET /cards`, `GET /rules/{number}`, `GET /rules/search`, `POST /decks`, `GET /decks`, `GET /decks/{id}`, `PUT /decks/{id}`, `DELETE /decks/{id}` (the forge deck routes), `GET /decks/{id}/analysis` (the cortex deck-analysis composition), `GET /articles`, and `GET /articles/{slug}` (the chronicle blog reads). Any additional public route — `POST /auth/refresh`, `POST /chat/streaming`, `GET /me`, further OAuth provider routes, password-reset routes — requires a MODIFIED delta on `gateway-api` before the route ships.
+`rbrain-gateway` SHALL expose exactly twenty-six **public** HTTP routes at v1: `GET /health` (defined by `repository-conventions`), `POST /auth/register`, `POST /auth/login`, `GET /auth/oauth/google/authorize`, `GET /auth/oauth/google/callback`, `GET /auth/oauth/discord/authorize`, and `GET /auth/oauth/discord/callback` (the identity auth proxies), `POST /chat`, `GET /cards/{scryfall_id}`, `GET /cards`, `GET /rules/{number}`, `GET /rules/search`, `POST /decks`, `GET /decks`, `GET /decks/{id}`, `PUT /decks/{id}`, `DELETE /decks/{id}` (the forge deck routes), `GET /decks/{id}/analysis` (the cortex deck-analysis composition), `GET /articles`, `GET /articles/{slug}` (the chronicle blog reads), and `GET /editorial/articles`, `GET /editorial/articles/{id}`, `POST /editorial/articles`, `PUT /editorial/articles/{id}`, `POST /editorial/articles/{id}/publish`, `DELETE /editorial/articles/{id}` (the chronicle editorial surface, JWT- and allowlist-gated). Any additional public route — `POST /auth/refresh`, `POST /chat/streaming`, `GET /me`, further OAuth provider routes, password-reset routes — requires a MODIFIED delta on `gateway-api` before the route ships.
 
 At v1, `rbrain-gateway` SHALL NOT expose any `/admin/*` route. Should one surface later (config reload, force-logout broadcast), an `/admin/*` carve-out comparable to `lexicon-api-admin-carveout` SHALL be introduced via its own OpenSpec change. Gateway SHALL reject any inbound external request whose path begins with `/admin/` regardless of underlying configuration — the `/admin/*` prefix is reserved across the platform per the `lexicon-api-admin-carveout` precedent.
 
@@ -108,7 +108,7 @@ At v1, `rbrain-gateway` SHALL NOT expose any `/admin/*` route. Should one surfac
 
 ### Requirement: CORS preflight discipline
 
-`rbrain-gateway` SHALL accept browser CORS preflight `OPTIONS` requests on every public HTTP route declared in this capability (`POST /auth/register`, `POST /auth/login`, `POST /chat`, `GET /cards`, `GET /cards/{scryfall_id}`, `GET /rules/{number}`, `GET /rules/search`, `POST /decks`, `GET /decks`, `GET /decks/{id}`, `PUT /decks/{id}`, `DELETE /decks/{id}`, `GET /decks/{id}/analysis`, `GET /articles`, `GET /articles/{slug}`) and on the platform-wide `GET /health`.
+`rbrain-gateway` SHALL accept browser CORS preflight `OPTIONS` requests on every public HTTP route declared in this capability (`POST /auth/register`, `POST /auth/login`, `POST /chat`, `GET /cards`, `GET /cards/{scryfall_id}`, `GET /rules/{number}`, `GET /rules/search`, `POST /decks`, `GET /decks`, `GET /decks/{id}`, `PUT /decks/{id}`, `DELETE /decks/{id}`, `GET /decks/{id}/analysis`, `GET /articles`, `GET /articles/{slug}`, `GET /editorial/articles`, `GET /editorial/articles/{id}`, `POST /editorial/articles`, `PUT /editorial/articles/{id}`, `POST /editorial/articles/{id}/publish`, `DELETE /editorial/articles/{id}`) and on the platform-wide `GET /health`.
 
 The CORS behavior is gated by a deployment-configured allowlist of permitted browser origins. The codex contract does NOT name the env var or config key; the gateway implementation slice (`gateway-cors-policy` in `rbrain-gateway`) does.
 
@@ -116,7 +116,7 @@ For a preflight `OPTIONS` request whose `Origin` header value is in the deployme
 
 - HTTP status `200 OK` (or `204 No Content`).
 - `Access-Control-Allow-Origin: <verbatim origin from request>`.
-- `Access-Control-Allow-Methods` listing at minimum `GET, POST, OPTIONS`.
+- `Access-Control-Allow-Methods` listing at minimum `GET, POST, PUT, DELETE, OPTIONS`.
 - `Access-Control-Allow-Headers` listing at minimum `authorization, content-type`.
 
 For a preflight request whose `Origin` is NOT in the allowlist, the gateway SHALL NOT emit any `Access-Control-Allow-*` header in the response; the browser then enforces the rejection by failing the subsequent fetch.
@@ -177,4 +177,40 @@ These routes SHALL NOT carry an injected `X-User-Id`; any client-supplied `X-Use
 
 - **WHEN** a client sends `POST /admin/articles` to the gateway
 - **THEN** gateway SHALL respond `404 Not Found` per the `/admin/*` closure rule; no proxy to chronicle SHALL be attempted
+
+### Requirement: Editorial authoring routes behind JWT and an operator allowlist
+
+`rbrain-gateway` SHALL expose an editorial surface for the chronicle blog: `GET /editorial/articles`, `GET /editorial/articles/{id}`, `POST /editorial/articles`, `PUT /editorial/articles/{id}`, `POST /editorial/articles/{id}/publish`, and `DELETE /editorial/articles/{id}`. Each request SHALL pass two gates in order:
+
+1. The standard Bearer-JWT verification, with the standard identical `401 {"error": "invalid token"}` on every failure mode.
+2. An operator allowlist: the verified `sub` claim SHALL be a member of the `ADMIN_USER_IDS` env var (comma-separated UUID list). A valid JWT whose `sub` is not listed SHALL receive `403 Forbidden` with body `{"error": "forbidden"}` — identical body regardless of reason. When `ADMIN_USER_IDS` is unset or empty (the default), every editorial request SHALL receive that same `403`: the surface is closed until an operator opts in.
+
+A gated request SHALL be forwarded to `${CHRONICLE_URL}` with the path rewritten from `/editorial/` to `/admin/` (e.g. `POST /editorial/articles` → `POST ${CHRONICLE_URL}/admin/articles`), with `X-Author-Id: <sub>` and `X-User-Id: <sub>` injected and any client-supplied values of either header stripped. Chronicle's response SHALL be re-emitted as-is. This is deliberately NOT role-based access control: identity issues no role claims (per `bounded-contexts`, authorization beyond authentication is outside identity's responsibility) — membership in a deployment-configured list is an operational trust decision at the gateway boundary.
+
+The external `/admin/*` rejection is unaffected: a request whose own path begins with `/admin/` SHALL still receive the hardcoded `404`.
+
+#### Scenario: An allowlisted editor creates a draft
+
+- **WHEN** a client posts `POST /editorial/articles` with a valid Bearer JWT whose `sub` is listed in `ADMIN_USER_IDS`
+- **THEN** gateway SHALL forward `POST ${CHRONICLE_URL}/admin/articles` with `X-Author-Id: <sub>` injected (any inbound `X-Author-Id` stripped) and re-emit chronicle's `201` draft payload
+
+#### Scenario: A valid user outside the allowlist is refused
+
+- **WHEN** a client sends any `/editorial/*` request with a valid Bearer JWT whose `sub` is not in `ADMIN_USER_IDS`
+- **THEN** gateway SHALL respond `403` with body `{"error": "forbidden"}` and SHALL NOT contact chronicle
+
+#### Scenario: The surface is closed by default
+
+- **WHEN** `ADMIN_USER_IDS` is unset or empty and any `/editorial/*` request arrives with a valid JWT
+- **THEN** gateway SHALL respond the identical `403 {"error": "forbidden"}`
+
+#### Scenario: No JWT means the standard 401, not a 403
+
+- **WHEN** an `/editorial/*` request arrives without a valid Bearer JWT
+- **THEN** gateway SHALL respond the standard `401 {"error": "invalid token"}` — the allowlist is never consulted
+
+#### Scenario: The admin prefix stays externally dead
+
+- **WHEN** an external client requests `POST /admin/articles` directly at the gateway
+- **THEN** gateway SHALL respond the hardcoded `404`, exactly as before this surface existed
 
