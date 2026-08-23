@@ -24,6 +24,6 @@
 
 ## 4. Sibling wiring (chore commits, no OpenSpec change)
 
-- [ ] lexicon: CI step `bash .codex/scripts/validate-formats.sh .` after validate-repo; `FORMATS` doc comment points at the catalog; `cargo fmt --check` + `cargo clippy` green
-- [ ] forge: same
-- [ ] Push all three repos; confirm the three CI runs green
+- [x] lexicon: CI step `bash .codex/scripts/validate-formats.sh .` after validate-repo; `FORMATS` doc comment points at the catalog; `cargo fmt --check` + `cargo clippy` green
+- [x] forge: same
+- [x] Push all three repos; confirm the three CI runs green
