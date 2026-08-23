@@ -12,7 +12,7 @@ document describes.
 
 `rbrain-codex` CI SHALL run `bash scripts/validate-response-shapes.sh`, which SHALL fail when the
 schema is not well-formed per its own documented grammar, when the schema's route set diverges from
-the closed eight, or when this document stops declaring "exactly eight HTTP routes".
+the closed eight, or when this document stops declaring that closure clause.
 
 A change to a response shape, a route, an accepted request-body field, or a query parameter SHALL
 update `schema.yaml` in the same OpenSpec cycle that carries the MODIFIED delta on this document —

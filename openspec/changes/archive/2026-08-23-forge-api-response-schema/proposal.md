@@ -3,18 +3,16 @@
 ## Why
 
 `forge-api`'s shape closure ("the same gate SHALL apply to the **shape** of the existing eight
-routes, not only to their number") is enforced today only by humans reading `spec.md` against
-forge's code. `rbrain-forge` has no machine-checkable projection of its own contract, so a
-response-shape drift — a field renamed, a route silently added, a query parameter dropped — is
-caught, if at all, by a reviewer, not by CI. The platform's other closed surfaces already follow
-the `format-catalog` pattern: a machine-readable source plus a validator that compares it to the
-implementing repo in CI. `forge-api` is the last closed surface without one.
+routes") is enforced today only by humans reading `spec.md` against forge's code. A response-shape
+drift — a field renamed, a route added, a query parameter dropped — is caught, if at all, by a
+reviewer, not by CI. Every other closed surface already follows the `format-catalog` pattern: a
+machine-readable source compared to the implementing repo in CI. `forge-api` is the last one
+without it.
 
-This change is the codex half of that gate. It commits the machine-readable schema and the
-validator that proves three things: the schema is well-formed, it still describes exactly the
-closed eight routes, and forge's Axum router (as written in `src/lib.rs`) matches the schema as a
-route set. Runtime response-shape checking is opt-in against a live forge for the stateless routes,
-keeping the unit gate free of a running-service dependency.
+This change is the codex half of that gate: the schema plus a validator proving the schema is
+well-formed, still describes exactly the closed eight, and that forge's Axum router matches it as a
+route set. Runtime shape-checking of the stateless routes is opt-in against a live forge, keeping
+the unit gate free of a running-service dependency.
 
 ## What Changes
 
