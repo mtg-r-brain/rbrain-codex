@@ -8,9 +8,9 @@
 
 ## 2. Codex artifacts (feat)
 
-- [ ] `openspec/specs/format-catalog/formats.yaml` — the sixteen ADR-0003 formats
-- [ ] `scripts/validate-formats.sh` — self mode + sibling mode per design.md
-- [ ] `.github/workflows/ci.yml` — `Validate format catalog` step in the validate job
+- [x] `openspec/specs/format-catalog/formats.yaml` — the sixteen ADR-0003 formats
+- [x] `scripts/validate-formats.sh` — self mode + sibling mode per design.md
+- [x] `.github/workflows/ci.yml` — `Validate format catalog` step in the validate job
 
 ## 3. Apply the deltas (sync)
 

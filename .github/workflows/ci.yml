@@ -24,6 +24,9 @@ jobs:
       - name: Validate catalog
         run: bash scripts/validate-catalog.sh
 
+      - name: Validate format catalog
+        run: bash scripts/validate-formats.sh
+
       - name: Validate topology
         run: bash scripts/validate-topology.sh
 

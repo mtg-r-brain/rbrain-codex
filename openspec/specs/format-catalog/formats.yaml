@@ -1,0 +1,24 @@
+# Authoritative platform-wide MTG format whitelist (ADR 0003).
+# Source of truth for: which formats every context recognizes — lexicon's
+# legality events, forge's accepted deck formats and legality read-model,
+# and (unenforced today) the format enums in cortex tools and the app UI.
+# Spec: openspec/specs/format-catalog/spec.md
+# Modifying this file requires an OpenSpec change that updates the spec.
+
+formats:
+  - standard
+  - pioneer
+  - modern
+  - legacy
+  - vintage
+  - commander
+  - pauper
+  - duel
+  - historic
+  - alchemy
+  - explorer
+  - premodern
+  - historicbrawl
+  - standardbrawl
+  - timeless
+  - future
