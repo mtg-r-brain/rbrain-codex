@@ -27,6 +27,9 @@ jobs:
       - name: Validate format catalog
         run: bash scripts/validate-formats.sh
 
+      - name: Validate forge response shapes
+        run: bash scripts/validate-response-shapes.sh
+
       - name: Validate topology
         run: bash scripts/validate-topology.sh
 

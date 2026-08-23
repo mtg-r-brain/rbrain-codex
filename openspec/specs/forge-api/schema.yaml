@@ -1,0 +1,185 @@
+# forge-api response shapes — machine-readable projection of forge-api/spec.md.
+# Single machine-readable source for validating forge's response shapes against
+# its contract (scripts/validate-response-shapes.sh). Spec:
+# openspec/specs/forge-api/spec.md — the canonical, normative document; this
+# file is its machine-readable peer and SHALL stay in lockstep with it.
+# Modifying a route, response shape, accepted request-body field, or query
+# parameter here requires a MODIFIED delta on forge-api before it ships.
+#
+# Grammar:
+#   A field spec is `{type: <T>}` plus optional keys:
+#     nullable: true      — the field MAY be JSON null
+#     required: true       — present-mandatory in a request body
+#     enum: [<v>, ...]     — value restricted to this set
+#     items: <spec|ref>    — array element shape (type: array)
+#     fields: {..}         — object member shapes (type: object)
+#     additional: <spec>   — arbitrary-key object value shape (type: object)
+#   A component reference is a bare scalar naming a `components` entry.
+#   Valid kinds: string, integer, number, boolean, object, array, null.
+
+components:
+  deck-entry:
+    type: object
+    fields:
+      quantity: {type: integer}
+      name: {type: string}
+  parse-error:
+    type: object
+    fields:
+      line: {type: integer}
+      content: {type: string}
+      reason: {type: string}
+  format-violation:
+    type: object
+    fields:
+      name: {type: string}
+      status: {type: string}
+  parsed-deck:
+    type: object
+    fields:
+      mainboard: {type: array, items: deck-entry}
+      sideboard: {type: array, items: deck-entry}
+      commander: {type: array, items: deck-entry}
+      maybeboard: {type: array, items: deck-entry}
+      errors: {type: array, items: parse-error}
+      total_mainboard: {type: integer}
+  stored-deck:
+    type: object
+    fields:
+      id: {type: string}
+      name: {type: string}
+      mainboard: {type: array, items: deck-entry}
+      sideboard: {type: array, items: deck-entry}
+      commander: {type: array, items: deck-entry}
+      maybeboard: {type: array, items: deck-entry}
+      total_mainboard: {type: integer}
+      format: {type: string, nullable: true}
+      format_violations: {type: array, items: format-violation}
+      status: {type: string}
+      version: {type: integer, nullable: true}
+      errors: {type: array, items: parse-error}
+      created_at: {type: string}
+  deck-summary:
+    type: object
+    fields:
+      id: {type: string}
+      name: {type: string}
+      total_mainboard: {type: integer}
+      created_at: {type: string}
+  analysis:
+    type: object
+    fields:
+      mana_curve: {type: object, additional: {type: integer}}
+      average_cmc: {type: number}
+      color_distribution: {type: object, additional: {type: integer}}
+      type_breakdown: {type: object, additional: {type: integer}}
+      total_mainboard: {type: integer}
+      unresolved: {type: array, items: {type: string}}
+  card-fact:
+    type: object
+    fields:
+      name: {type: string}
+      mana_cost: {type: string}
+      type_line: {type: string}
+  error:
+    type: object
+    fields:
+      error: {type: string}
+
+routes:
+  - method: GET
+    path: /health
+    responses:
+      200:
+        type: object
+        fields:
+          status: {type: string}
+          context: {type: string}
+
+  - method: POST
+    path: /decks/parse
+    request:
+      body:
+        type: object
+        fields:
+          decklist: {type: string, required: true}
+    responses:
+      200: {ref: parsed-deck}
+      422: {ref: error}
+
+  - method: POST
+    path: /decks/analyze
+    request:
+      body:
+        type: object
+        fields:
+          decklist: {type: string, required: true}
+          card_facts: {type: array, required: true, items: card-fact}
+          format: {type: string, nullable: true}
+    responses:
+      200:
+        type: object
+        fields:
+          mana_curve: {type: object, additional: {type: integer}}
+          average_cmc: {type: number}
+          color_distribution: {type: object, additional: {type: integer}}
+          type_breakdown: {type: object, additional: {type: integer}}
+          total_mainboard: {type: integer}
+          unresolved: {type: array, items: {type: string}}
+          format: {type: string, nullable: true}
+          format_violations: {type: array, items: format-violation}
+      422: {ref: error}
+
+  - method: POST
+    path: /decks
+    request:
+      body:
+        type: object
+        fields:
+          decklist: {type: string, required: true}
+          name: {type: string}
+          format: {type: string, nullable: true}
+          status: {type: string, enum: [draft, saved]}
+    responses:
+      201: {ref: stored-deck}
+      401: {ref: error}
+      422: {ref: error}
+
+  - method: GET
+    path: /decks
+    responses:
+      200: {type: array, items: deck-summary}
+      401: {ref: error}
+
+  - method: GET
+    path: /decks/{id}
+    query:
+      version: {type: integer}
+    responses:
+      200: {ref: stored-deck}
+      401: {ref: error}
+      404: {ref: error}
+      422: {ref: error}
+
+  - method: PUT
+    path: /decks/{id}
+    request:
+      body:
+        type: object
+        fields:
+          name: {type: string}
+          decklist: {type: string}
+          format: {type: string, nullable: true}
+          status: {type: string, enum: [draft, saved]}
+    responses:
+      200: {ref: stored-deck}
+      401: {ref: error}
+      404: {ref: error}
+      422: {ref: error}
+
+  - method: DELETE
+    path: /decks/{id}
+    responses:
+      204: {type: null}
+      401: {ref: error}
+      404: {ref: error}
