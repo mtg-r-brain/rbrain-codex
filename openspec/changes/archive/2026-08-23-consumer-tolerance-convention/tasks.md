@@ -15,7 +15,7 @@ Spec-only change. No sibling code ships here; each consumer's
 
 - [x] Commit `📝 propose(consumer-tolerance-convention)`
 - [x] Promote the deltas into `openspec/specs/repository-conventions/spec.md` and `openspec/specs/forge-api/spec.md`; commit `🔄 sync(consumer-tolerance-convention)`
-- [x] Archive with `openspec archive consumer-tolerance-convention -y`, commit `📦 archive(consumer-tolerance-convention)`
+- [x] Archive with `openspec archive consumer-tolerance-convention -y --skip-specs` (the sync already promoted the deltas, so the archive only relocates the change), commit `📦 archive(consumer-tolerance-convention)`
 - [x] Verify the promoted specs read coherently end to end (no duplicated requirement, no orphaned scenario)
 - [x] Push; CI green
 
