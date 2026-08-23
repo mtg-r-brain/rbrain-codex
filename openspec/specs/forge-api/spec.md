@@ -233,7 +233,7 @@ The producer obligation is the delta gate stated by the closure requirement abov
 
 A consumer that wants eager detection of contract drift SHALL obtain it from a contract test comparing a recorded forge payload against its expected field set, where a mismatch fails that consumer's CI — not from strict rejection in the model that serves production traffic.
 
-This requirement is stated for forge's consumers. Extending it to the platform's other `<context>-api` contracts is deliberately not in its scope.
+This requirement is the forge-specific statement of the platform-wide rule defined by `repository-conventions` ("Consumer tolerance of additive response fields"), which is the authoritative source. The rule applies to every `<context>-api` contract, forge's included.
 
 #### Scenario: forge grows a response field
 
