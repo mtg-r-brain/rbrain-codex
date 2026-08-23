@@ -14,13 +14,13 @@
 
 ## 3. Apply the deltas (sync)
 
-- [ ] Both MODIFIED requirement headers match the canonical spec verbatim
-- [ ] `openspec archive platform-format-catalog -y`
-- [ ] Verify the promoted specs: `format-catalog/spec.md` created; `forge-api/spec.md` carries the catalog provenance sentence and zero `sixteen` count words; identifiers unchanged
-- [ ] `bash scripts/validate-formats.sh` green (self mode — only meaningful after promotion, see design.md ordering note)
-- [ ] `bash scripts/validate-formats.sh ../rbrain-lexicon` and `../rbrain-forge` green
-- [ ] `bash scripts/validate-repo.sh .` and `bash scripts/validate-api-closure.sh` still green
-- [ ] Stage the sync commit with an explicit path list (`openspec/specs/format-catalog/spec.md`, `openspec/specs/forge-api/spec.md`) — never `git add -A openspec/`
+- [x] Both MODIFIED requirement headers match the canonical spec verbatim
+- [x] `openspec archive platform-format-catalog -y`
+- [x] Verify the promoted specs: `format-catalog/spec.md` created; `forge-api/spec.md` carries the catalog provenance sentence and zero `sixteen` count words; identifiers unchanged
+- [x] `bash scripts/validate-formats.sh` green (self mode — only meaningful after promotion, see design.md ordering note)
+- [x] `bash scripts/validate-formats.sh ../rbrain-lexicon` and `../rbrain-forge` green
+- [x] `bash scripts/validate-repo.sh .` and `bash scripts/validate-api-closure.sh` still green
+- [x] Stage the sync commit with an explicit path list (`openspec/specs/format-catalog/spec.md`, `openspec/specs/forge-api/spec.md`) — never `git add -A openspec/`
 
 ## 4. Sibling wiring (chore commits, no OpenSpec change)
 
