@@ -22,5 +22,5 @@ nothing: it already injects `X-User-Id` on `/chat` per `gateway-api`.
 
 ## 4. Land
 
-- [ ] `🔄 sync(cortex-chat-owner-binding)` — promote the ADDED requirement to the canonical `cortex-api` spec
-- [ ] `📦 archive(cortex-chat-owner-binding)`
+- [x] `🔄 sync(cortex-chat-owner-binding)` — promote the ADDED requirement to the canonical `cortex-api` spec
+- [x] `📦 archive(cortex-chat-owner-binding)`
