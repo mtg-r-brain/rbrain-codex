@@ -10,15 +10,15 @@ nothing: it already injects `X-User-Id` on `/chat` per `gateway-api`.
 
 ## 2. Cortex implementation slice (`rbrain-cortex`)
 
-- [ ] `app/chat/router.py`: pass the parsed `X-User-Id` into `store.new_conversation(...)` so allocation attributes the row
-- [ ] `app/chat/router.py`: reject a present-but-malformed `X-User-Id` with `400` + JSON `error` before any allocation
-- [ ] Tests in `tests/test_chat_endpoint.py`: attributed creation, anonymous creation stays NULL, malformed header → 400 with no allocation, continuation leaves the owner untouched
-- [ ] `pytest` + repo lint/type gates green
+- [x] `app/chat/router.py`: pass the parsed `X-User-Id` into `store.new_conversation(...)` so allocation attributes the row
+- [x] `app/chat/router.py`: reject a present-but-malformed `X-User-Id` with `400` + JSON `error` before any allocation
+- [x] Tests in `tests/test_chat_endpoint.py`: attributed creation, anonymous creation stays NULL, malformed header → 400 with no allocation, continuation leaves the owner untouched
+- [x] `pytest` + repo lint/type gates green
 
 ## 3. Live verification (the smoke that found the defect)
 
-- [ ] Rebuild the `rbrain-cortex` image, restart the stack slice, `POST /chat` with a Bearer JWT through the gateway, and assert the new `cortex.conversations` row carries the token's `sub` in `user_id`
-- [ ] Confirm an anonymous direct-to-cortex `POST /chat` still allocates a NULL-owner row
+- [x] Rebuild the `rbrain-cortex` image, restart the stack slice, `POST /chat` with a Bearer JWT through the gateway, and assert the new `cortex.conversations` row carries the token's `sub` in `user_id`
+- [x] Confirm an anonymous direct-to-cortex `POST /chat` still allocates a NULL-owner row
 
 ## 4. Land
 
